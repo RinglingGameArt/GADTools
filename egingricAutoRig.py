@@ -13,9 +13,7 @@
             B_L_Axle
             B_R_Axle
             F_L_Axle
-            F_R_Axle 
-            
-    What happens when I edit this on GitHub?
+            F_R_Axle         
 """
 # Import Maya Commands
 import maya.cmds as cmds
@@ -59,14 +57,18 @@ xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
 cmds.xform("Entire_Vehicle", centerPivots=True)
 # move the pivot point in the zmax direction to the top of the vehicle
 cmds.move(zmax, ["Entire_Vehicle" + ".scalePivot","Entire_Vehicle" + ".rotatePivot"], z=True, absolute=True)
-# now move the pivot point in x to the location of the back tires
-# HACK: Need to figure out how do take a vector apart into it's compnents so I can get X loc only of back tires.
-cmds.move(-71.028423309326172, ["Entire_Vehicle" + ".scalePivot","Entire_Vehicle" + ".rotatePivot"], x=True, absolute=True)
+# now move the pivot point in x to the location of the back tires.
+cmds.move(B_L_TireLoc[0], ["Entire_Vehicle" + ".scalePivot","Entire_Vehicle" + ".rotatePivot"], x=True, absolute=True)
 Gun_RotateLoc = cmds.xform("Entire_Vehicle", query=True, worldSpace=True, rotatePivot=True)
 print Gun_RotateLoc
 
+# For Gun_Base put it halfway between Main_Root and Gun_Rotate with some math
+Gun_BaseLoc = [Gun_RotateLoc[0] - (Gun_RotateLoc[0] / 2), 0, Gun_RotateLoc[2] - (MainRootLoc[2] / 2)]
+print Gun_RotateLoc
+print MainRootLoc
+print Gun_BaseLoc
 
-# Now that we have our loc info, move Entire_Vehicle pivot back to 0,0,0, just in case Unreal cares about such things.
+# Now that we have our loc info, move Entire_Vehicle pivot back to 0,0,0, just in case Unreal cares about such things
 cmds.xform("Entire_Vehicle", centerPivots=True)
 bounding_box = cmds.xform("Entire_Vehicle", q=True, boundingBox=True, ws=True)
 xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
@@ -198,13 +200,15 @@ new_Joint = cmds.joint(position=(F_R_AxleLoc))
 cmds.joint(edit=True, zeroScaleOrient=True, orientJoint="xyz", secondaryAxisOrient="yup")
 cmds.rename(new_Joint, "F_R_Axle")
 
-#Create Gun Joints
+#Create Gun Joints ######################################
 #Go back up to Main_Root so next joint is child of it.
 cmds.pickWalk(direction="up")
-# Create Gun_Rotate joint
+# Create Gun_Base joint
+new_Joint = cmds.joint(position=(Gun_BaseLoc))
+cmds.joint(edit=True, zeroScaleOrient=True, orientJoint="xyz", secondaryAxisOrient="yup")
+cmds.rename(new_Joint, "Gun_Base")
+
+# Create Gun_Rotate joint as child of Gun_Rotate joint
 new_Joint = cmds.joint(position=(Gun_RotateLoc))
 cmds.joint(edit=True, zeroScaleOrient=True, orientJoint="xyz", secondaryAxisOrient="yup")
 cmds.rename(new_Joint, "Gun_Rotate")
-
-
-
