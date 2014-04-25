@@ -1,0 +1,73 @@
+import maya.cmds as cmds
+
+def mirrorFacesUI():
+    window_name = "MirrorFacesUI"
+    
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    my_window = cmds.window(window_name, title="Mirror Faces Options")
+    
+    cmds.showWindow(my_window)
+    
+    cmds.columnLayout(adj=True)
+    
+    cmds.button(label="-X", c=MirrorFacesX)
+    cmds.button(label="Y", c=MirrorFacesY)
+    cmds.button(label="-Z", c=MirrorFacesZ)
+    
+def MirrorFacesX(unused=None):
+    mirrorFaces(mode="-X")
+    
+def MirrorFacesY(unused=None):
+    mirrorFaces(mode="Y")
+ 
+def MirrorFacesZ(unused=None):
+    mirrorFaces(mode="-Z")
+
+
+def mirrorFaces(mode="-X"):
+
+    selected_faces = cmds.polyChipOff (dup=True, kft=True)
+    
+    for faces in selected_faces:
+        cmds.select(clear=True)
+        cmds.selectMode(component=True)
+        cmds.selectMode(object=True) 
+        
+    mirrored_faces = cmds.polySeparate(ch=False)
+
+    cmds.select(mirrored_faces)
+    cmds.xform(ws=True, s=[1, 1, 1])
+    
+def mirrorFaces(mode="Y"):
+
+    selected_faces = cmds.polyChipOff (dup=True, kft=True)
+    
+    for faces in selected_faces:
+        cmds.select(clear=True)
+        cmds.selectMode(component=True)
+        cmds.selectMode(object=True) 
+        
+    mirrored_faces = cmds.polySeparate(ch=False)
+        
+    cmds.select(mirrored_faces[1])
+    cmds.xform(s=[-1,-1,1])
+    
+def mirrorFaces(mode="-Z"):
+
+    selected_faces = cmds.polyChipOff (dup=True, kft=True)
+    
+    for faces in selected_faces:
+        cmds.select(clear=True)
+        cmds.selectMode(component=True)
+        cmds.selectMode(object=True) 
+        
+    mirrored_faces = cmds.polySeparate(ch=False)
+        
+    cmds.select(mirrored_faces[1])
+    cmds.xform(s=[1,1,-1])
+    
+#Mirroring is only working on Z axis
+
+mirrorFacesUI()
