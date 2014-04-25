@@ -12,12 +12,10 @@ import logging
 Selection = cmds.ls(sl=True) 
 #window_name = "controlsWindow"
 
-if Selection:
     cmds.delete(Selection, constructionHistory=True)
     cmds.cutKey(Selection, clear=True)
     cmds.makeIdentity(Selection, apply=True, t=1, r=1, s=1, n=0)
-else:
-    logging.warning("No objects selected.")
+
 """
 #replace existing window
 if cmds.window(window_name, q=True, exists=True):
