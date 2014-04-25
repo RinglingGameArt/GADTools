@@ -1,0 +1,64 @@
+import maya.cmds as cmds
+import random as rand
+
+global xmax
+global xmin
+global ymax
+global ymin
+global zmax
+global zmin
+
+window_name = "Randomizer"
+if cmds.window(window_name, q=True, exists=True):
+    cmds.deleteUI(window_name)
+
+def ranVerts(*args):
+    selection=cmds.ls(sl=True)
+    for selected in selection:
+        xmin=cmds.intField("X1", q=True, v=True)
+        xmax=cmds.intField("X2", q=True, v=True)
+        ymin=cmds.intField("X3", q=True, v=True)
+        ymax=cmds.intField("X4", q=True, v=True)
+        zmin=cmds.intField("X5", q=True, v=True)
+        zmax=cmds.intField("X6", q=True, v=True)
+        numVerts=cmds.polyEvaluate(selected, v=True)
+        for currentVert in range (0, numVerts):
+            x=rand.uniform(xmin,xmax)
+            y=rand.uniform(ymin,ymax)
+            z=rand.uniform(zmin,zmax)
+            vertName=selected+'.vtx'+'['+str(currentVert)+']'
+            cmds.polyMoveVertex(vertName,tx=x, ty=y, tz=z) 
+            
+my_window=cmds.window(window_name, title="Randomizer Settings")
+my_layout=cmds.columnLayout(parent=my_window,adj=True)
+cmds.text(label="+X")
+cmds.intField("X1", value=1)
+cmds.text(label="")
+cmds.text(label="")
+cmds.text(label="-X")
+cmds.intField("X2", value=-1)
+cmds.text(label="")
+cmds.text(label="")
+cmds.text(label="+Y")
+cmds.intField("X3", value=1)
+cmds.text(label="")
+cmds.text(label="")
+cmds.text(label="-Y")
+cmds.intField("X4", value=-1)
+cmds.text(label="")
+cmds.text(label="")
+cmds.text(label="+Z")
+cmds.intField("X5", value=1)
+cmds.text(label="")
+cmds.text(label="")
+cmds.text(label="-Z")
+cmds.intField("X6", value=-1)
+cmds.text(label="")
+cmds.text(label="")
+cmds.button("Randomize",command=ranVerts)
+cmds.showWindow(my_window)
+
+
+
+
+
