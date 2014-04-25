@@ -20,7 +20,7 @@ for selected in selection:
     
     #Align piovt
     piv = cmds.xform (selected , piv=True, q=True, ws=True) #make a basic pivot information
-    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) ) #change pivot loacation
+    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) ) #change pivot loacation to basic location
 
 #function settings   
 
