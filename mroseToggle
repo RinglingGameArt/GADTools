@@ -1,0 +1,11 @@
+'''
+By Megan Rose
+Toggles Normals
+but in a simple code format
+'''
+
+import maya.cmds as cmds
+
+selection = cmds.ls(sl= True)
+
+cmds.polyOptions(f=True,r=True, dn=True)
