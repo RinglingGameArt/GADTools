@@ -15,7 +15,7 @@ def UDKScaleUI():
     my_window = cmds.window(window_name, title = "UDK Scale Tool")
     #constructs the layout of said window, names the float field group so its results can be passed into showTime
     cmds.columnLayout(adj = True)
-    desiredWidth = cmds.floatFieldGrp(numberOfFields=1, label = "Desired Width in UDK:", el= "ft", precision = 3)
+    desiredWidth = cmds.floatFieldGrp(numberOfFields=1, label = "Desired Size in UDK:", el= "ft", precision = 3)
     cmds.button(label='Scale by X', command=lambda _:scalebyX(desiredWidth))
     cmds.button(label='Scale by Y', command=lambda _:scalebyY(desiredWidth))
     cmds.button(label='Scale by Z', command=lambda _:scalebyZ(desiredWidth))
