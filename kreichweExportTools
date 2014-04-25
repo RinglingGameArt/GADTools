@@ -72,14 +72,6 @@ def generateExportTool():
     cmds.button(label="Delete", c=deleteHistory)
     
     cmds.text(label=" ")
-    cmds.text(label="  |                   |")
-    cmds.text(label="  |                   |")
-    cmds.text(label="  |                   |")
-    cmds.text(label="  |                   |")
-    cmds.text(label="  \  |  /            \  |  /")
-    cmds.text(label="  \ | /              \ | /")
-    cmds.text(label="  \|/                \|/")
-    cmds.text(label="  |                   |")
     cmds.text(label="------------------------------------")
     cmds.button(label="\n Export Selection \n", bgc=[0.7, 1, 0.7], c=exportSelection)
     
@@ -121,7 +113,7 @@ def performFunction(mode="conformN"):
     
     #Log Error if nothing is selected
     if not selection:
-        logging.error("Please SELECT something, you useless sack of fecal matter.")
+        logging.error("Please SELECT something, you derp.")
     
     
     #----------Decide What Happens depending on the Mode that is chosen------------#
