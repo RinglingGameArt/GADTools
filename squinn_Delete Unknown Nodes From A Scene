@@ -1,0 +1,38 @@
+'''
+
+This script deletes unknown nodes from a scene even if they are locked!
+
+'''
+
+# Imports the Maya commands.
+import maya.cmds as mc
+
+# Imports the system.
+import sys
+
+# Unknowns equal nodes specified by Maya as 'unknown'
+unknowns = mc.ls(type='unknown')
+
+# Now, if they are unknown..
+if unknowns: 
+
+    # Unlock the locked unknown nodes.
+    mc.lockNode(unknowns, lock=0)
+    
+    # Delete those nodes.
+    mc.delete(unknowns)
+    
+    # Set any new unknown nodes that (for some reason) might be created to unknown.
+    unknowns = mc.ls(type='unknown')
+    
+    # If there are no unknown nodes in the scene, write:
+    if not unknowns:
+        sys.stdout.write('All unknown nodes have been deleted!')
+        
+    # Otherwise, if there STILL ARE unknown nodes in the scene, write:
+    else:
+        sys.stdout.write('How odd, somehow not all the unknown nodes were deleted..')
+        
+# If there are no unknown nodes in the scene to begin with, write:
+else:
+    sys.stdout.write('lol, you silly! There are no unknown nodes in this scene!')
