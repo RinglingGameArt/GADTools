@@ -1,0 +1,54 @@
+"""
+
+       Debris Simulation Tool
+        By: Walker Paulsen
+
+"""
+
+import maya.cmds as cmds
+import random
+# you need to import Maya's random function. This command does just that.
+
+original = cmds.polyCube(w=1, h=1, d=1, name="DebrisCube")
+# variable "result" that creates a cube called DebrisCube.
+
+transformName = original[0]
+# the 0 in the [] references the name under result: "DebrisCube"
+
+for i in range( 0, 50 ):
+
+    instanceResult = cmds.instance(transformName, name=transformName + '_instance#')
+    # creates an instance of the cube. This instance mirrors the geometry of the original.
+    
+
+    xmove=random.randint(-100,100)
+    ymove=random.randint(-100,100)
+    zmove=random.randint(-100,100)
+    # these are variables that define the random range on which the instances are moved.
+
+    cmds.move(xmove,ymove,zmove, instanceResult)
+    # this command references the above variables and moves the instances.
+
+
+    xscale=random.randint(5,20)
+    yscale=random.randint(5,20)
+    zscale=random.randint(5,20)
+    # these are variables that define the random range on which the instances are scaled.
+
+    cmds.scale(xscale,yscale,zscale, instanceResult)
+    # this command references the above variables and scales the instances.
+
+
+    xrotate=random.randint(0,360)
+    yrotate=random.randint(0,360)
+    zrotate=random.randint(0,360)
+    # these are variables that define the random range on which the instances are rotated.
+
+    cmds.rotate(random.randint(90,270), instanceResult)
+    # this command references the above variables and rotates the instances.
+    
+cmds.select( 'DebrisCube_instance*' )
+# This selects all the cubes.
+
+cmds.polyUnite( 'DebrisCube_instance*' )
+# This merges all the cubes.
