@@ -1,0 +1,47 @@
+import maya.cmds as cmds
+
+def PerfectEportToolUI():
+    
+    window_name = "Perfect Export Tool"
+    
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    my_window = cmds.window(window_name, title="Perfect Export Tool")
+    my_layout = cmds.columnLayout(parent=my_window, adj=True)
+    cmds.button(label= "Easy Export", c=allinone )
+    cmds.showWindow(my_window)
+    
+def allinone(unused = None):
+    PerfectExportTool('tool')
+
+def PerfectExportTool(mode=None):
+
+    selected = cmds.ls(sl=True)
+    if not selected:
+        logging.error("Please Select Something")
+        return 
+        
+    if mode == "tool":
+        mesh = cmds.xform(cp=True)
+        cmds.makeIdentity(apply=1, translate=1, rotate=1, scale=1, normal=0, pn=1) #Freezes Transforms
+        cmds.DeleteHistory (selected) # delete the history of the selected objects
+        cmds.ConformPolygonNormals (selected) #conforms normals
+        cmds.SetToFaceNormals (selected) #sets normals
+        cmds.polyNormalPerVertex (selected, fn=True) #lock normals
+        
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+    
+            # center the pivot
+            cmds.xform(selected, cp=True)
+            
+            # determine the bounding box so we know where to put our pivot
+            # bounding_box = xmin ymin zmin xmax ymax zmax.
+            bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+            
+            # move the pivot points in the Y direction to the bottom Y point
+            cmds.move(bounding_box[2], (selected + ".scalePivot", selected + ".rotatePivot"), z=True, absolute=True)
+
+PerfectEportToolUI()
