@@ -1,3 +1,14 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+THE SCRIPT TO END ALL SCRIPTS THE ONE THE ONLY.....
+
+the really awful script that barely works but hopefully will be enough to let me pass this assignment
+at least until I have a resubmit ready to be placed. 
+
+Script toggels between soft(?) mesh and hard mesh. 
+
+yeh. 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
+
 import maya.cmds as cmds
 
 selection = cmds.ls(sl=True)
