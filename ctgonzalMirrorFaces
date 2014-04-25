@@ -35,12 +35,12 @@ def mirrorFaces(mode="-X"):
     for faces in selected_faces:
         cmds.select(clear=True) 
           
-           """ for some reason, you need to toggle between component mode
-     and object mode in order for the script to select and duplicate
-     just the face.
-     If you do not toggle, you will get an error message stating that
-     cmds.polySeparate needs exactly one polygonal object or polygonal
-     face from another object."""
+        """ for some reason, you need to toggle between component mode
+        and object mode in order for the script to select and duplicate
+        just the face.
+        If you do not toggle, you will get an error message stating that
+        cmds.polySeparate needs exactly one polygonal object or polygonal
+        face from another object."""
         
         cmds.selectMode(component=True)
         cmds.selectMode(object=True) 
@@ -48,7 +48,7 @@ def mirrorFaces(mode="-X"):
     mirrored_faces = cmds.polySeparate(ch=False)
 
     cmds.select(mirrored_faces)
-    cmds.xform(ws=True, s=[1, 1, 1])
+    cmds.xform(ws=True, rfl=True, s=[1, 1, 1])
     
 def mirrorFaces(mode="Y"):
 
@@ -62,7 +62,7 @@ def mirrorFaces(mode="Y"):
     mirrored_faces = cmds.polySeparate(ch=False)
         
     cmds.select(mirrored_faces[1])
-    cmds.xform(s=[-1,-1,1])
+    cmds.xform(ws=True, rfl=True, s=[-1,-1,1])
     
 def mirrorFaces(mode="-Z"):
 
@@ -76,7 +76,7 @@ def mirrorFaces(mode="-Z"):
     mirrored_faces = cmds.polySeparate(ch=False)
         
     cmds.select(mirrored_faces[1])
-    cmds.xform(s=[1,1,-1])
+    cmds.xform(ws=True, rfl=True, s=[1,1,-1])
     
 #Mirroring is only working on Z axis
 
