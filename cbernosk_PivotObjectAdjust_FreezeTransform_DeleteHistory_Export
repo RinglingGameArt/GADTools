@@ -1,0 +1,30 @@
+import maya.cmds as cmds
+  
+selection = cmds.ls(sl=True)
+for selected in selection:
+    
+    # Moves selected object via X,Y,Z. Can adjust as needed. #
+    cmds.move(0, 0, 0, selection[0], absolute=True)
+    
+    # Moves pivot to location via X,Y,Z.Can adjust as needed. #
+    cmds.move(0, 0, 0, selection[0]+".scalePivot",selection[0]+".rotatePivot", absolute=True)
+    
+    # Delete history of the selection. #
+    cmds.delete(ch=True)
+    
+    # Freeze Transform. #
+    cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+    
+    # Export Selection. Window comes up. #
+    cmds.ExportSelection()
+    
+    
+    
+    
+   
+    
+    
+    
+   
+   
+
