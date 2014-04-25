@@ -1,0 +1,13 @@
+import maya.cmds as cmds
+
+selection = cmds.ls(sl=True)
+for selected in selection:
+    
+    softedge = cmds.polyOptions(selected, q=True, se=True)
+    if softedge[0]:
+        cmds.polyOptions(selected, he=True)
+    else:
+        cmds.polyOptions(selected, se=True)
+        
+def softedge():
+    generateCollision("Soften")
