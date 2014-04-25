@@ -13,3 +13,5 @@ import maya.cmds as cmds
 selection = cmds.ls(sl= True)
 
 cmds.polyOptions(f=True,r=True, dn=True)
+#PolyOptions Changes the global display polygonal attributes(fancydef)
+#F flag is Force, R flag is Replace, DN flag is Display Normals
