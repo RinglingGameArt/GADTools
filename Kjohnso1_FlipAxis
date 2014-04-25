@@ -120,7 +120,27 @@ def degToRad(xDeg, yDeg, zDeg, applyFor) :
 		This function is flipping the axis, however it's not functional at the moment, still trying to convert a similar code from MEL.
 		
 	"""
-
+def willFlipAxis(axis):
+	selection = cmds.ls(sl=True)
+	flip=0.0
+	for i in lsSel:
+		cmds.getAttr(str(i) + ".scale")
+		if axis == 0:
+			flip=getS[0] - (getS[0] * 2)
+			cmds.setAttr((str(i) + ".scaleX"),
+				flip)
+			
+		
+		else axis == 1:
+			flip=getS[1] - (getS[1] * 2)
+			cmds.setAttr((str(i) + ".scaleY"),
+				flip)
+			
+		
+		    else axis == 2:
+			flip=getS[2] - (getS[2] * 2)
+			cmds.setAttr((str(i) + ".scaleZ"),
+				flip)
 
 
 myWindow()
