@@ -1,0 +1,50 @@
+import maya.cmds as cmds
+
+global sg1  # global variables do avoid scope issues
+global rb1
+global rb1value
+global sg1value
+
+def simpleUI(): # build our UI
+          
+    # declare the name of our window object
+    window_name = "controlsWindow"
+    
+    # check if that object already exists, and delete it if it does 
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    # create a new window object
+    my_window = cmds.window(window_name, title="WIDGETS!")
+    
+    # the adj flag makes the buttons stretch to the width of the column
+    my_layout = cmds.columnLayout(parent=my_window, adj=True)
+    cmds.intSliderGrp( "sg1", label='intSlider', field=True, cc=sliderIntCheck )
+    
+    # make some radio buttons 
+    collection = cmds.radioCollection()
+    collectionLayout = cmds.rowLayout(numberOfColumns=4)
+    cmds.text(parent = my_layout, l = "radioButton", p=collectionLayout)
+    cmds.radioButton( "rb1", label='One', p=collectionLayout, cc=radioButtonCheck1)
+    cmds.radioButton( label='Two', p=collectionLayout)
+    cmds.radioButton( label='Three', p=collectionLayout )
+    
+    # show that window
+    cmds.showWindow(my_window)
+
+def radioButtonCheck1 (*arg):
+    
+    rb1value = cmds.radioButton("rb1", query=True, select=True)
+    
+    if rb1value == True:
+        print "Radio Button 1 is On"
+    else:
+        print "Radio Button 1 is OFF"
+   
+def sliderIntCheck (*arg):
+    
+    sg1value = cmds.intSliderGrp("sg1", query=True, value=True) 
+    
+    print sg1value
+    
+simpleUI()
