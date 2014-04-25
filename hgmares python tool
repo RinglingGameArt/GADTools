@@ -1,0 +1,69 @@
+import maya.cmds as cmds
+import maya.mel as mm   #import mel 
+from functools import partial
+
+
+    
+def facesParallel(*args):
+    mesh = cmds.ls(sl=True)[0]
+    faceCount = cmds.polyEvaluate(f=True)
+    for face in range(0,faceCount,2):
+        cmds.select("%s.f[%s]" % (mesh,face), add=True)
+    
+def facesLine(*args):
+    mesh = cmds.ls(sl=True)[0]
+    faceCount = cmds.polyEvaluate(f=True)
+    for face in range(2,faceCount,0):
+        cmds.select("%s.f[%s]" % (mesh,face), add=True)
+    
+def vertexParallel(*args):
+    
+    mm.eval('polySelectEdgesEveryN "edgeRing" 2')
+    #selection = cmds.ls (sl=True)[0] #makes a list of the actual selection (selected edges)
+    #cmds.polyListComponentConversion( 'plg.vtx[0]', 'plg.vtx[3]', 'plg.vtx[8]', tv=True )
+    #conVert [] =   cmds.polyListComponentConversion(selection, tv=True ) #//converts it to vertices in an array
+    #print conVert
+    #select conVert #selects the vertices
+    
+    
+def edgeLine(*args):   
+ 
+    mm.eval('polySelectEdgesEveryN "edgeLoop" 2')  
+      
+def vertexLine(*args):
+   
+    
+    mm.eval('polySelectEdgesEveryN "edgeLoop" 2')
+def edgeParallel(*args):
+    #mm.eval('polySelectEdgesEveryN "edgeRing" 2'
+    
+    mm.eval('polySelectEdgesEveryN "edgeRing" 2')  #assigning an action to my function 
+    
+window_name = "toolWindow"   #creates window
+
+if cmds.window(window_name,q=True, exists=True):     #deletes window when you open a new one
+    cmds.deleteUI(window_name)
+    
+my_window = cmds.window(window_name,title= "Hugo's tool")    #TITLE FOR THE WINDOW
+columns = cmds.columnLayout(adj=True)            #SETS THE LAYOUT TO BE IN COLUMNS
+cmds.text(label="")
+cmds.text(label="On the mesh, elect edges to use as guide.")
+cmds.text(label="")
+cmds.text(label="Edges:")  
+cmds.text(label="Start by selecting edges as guide")
+cmds.text(label="")   
+cmds.button(label= "select", command= edgeLine)
+cmds.button(label= "select parallel", command= edgeParallel)
+#cmds.text(label="")
+#cmds.text(label="Vertex")
+#cmds.text(label="")
+#cmds.button(label= "select", command= vertexLine)
+#cmds.button(label= "select parallel", command= vertexParallel)
+cmds.text(label="")
+cmds.text(label="Faces")
+cmds.text(label="Start by selecting object")
+cmds.text(label="")
+#cmds.button(label= "select", command= facesLine)
+cmds.button(label= "select parallel", command= facesParallel)
+
+cmds.showWindow(my_window)
