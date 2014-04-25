@@ -16,6 +16,7 @@ def UDKScaleUI():
     #constructs the layout of said window, names the float field group so its results can be passed into showTime
     cmds.columnLayout(adj = True)
     desiredWidth = cmds.floatFieldGrp(numberOfFields=1, label = "Desired Size in UDK:", el= "ft", precision = 3)
+    cmds.text(label = 'This tool will scale your object by X, Y, or Z in a uniform manner.')
     cmds.button(label='Scale by X', command=lambda _:scalebyX(desiredWidth))
     cmds.button(label='Scale by Y', command=lambda _:scalebyY(desiredWidth))
     cmds.button(label='Scale by Z', command=lambda _:scalebyZ(desiredWidth))
@@ -35,8 +36,6 @@ def scalebyX(desiredWidth):
     #get size of selection 
     xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selection[0], q=True, ws=True, bb=True)
     width = abs(xmax - xmin)
-    height = abs(zmax - zmin)
-    depth = abs(ymax - ymin)
     #figure out how much the selection needs to be scaled by
     w = width / 16
     y = dWidth / w
@@ -45,7 +44,6 @@ def scalebyX(desiredWidth):
     #scale selection and delete previous history
     cmds.scale(y, y, y, selection, absolute = True)
     cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
-    cmds.delete(Selection, constructionHistory=True)
     
 def scalebyY(desiredWidth):
     dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
@@ -60,8 +58,6 @@ def scalebyY(desiredWidth):
         return
     #get size of selection 
     xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selection[0], q=True, ws=True, bb=True)
-    width = abs(xmax - xmin)
-    height = abs(zmax - zmin)
     depth = abs(ymax - ymin)
     #figure out how much the selection needs to be scaled by
     w = depth / 16
@@ -69,7 +65,6 @@ def scalebyY(desiredWidth):
     #scale selection and delete previous history
     cmds.scale(y, y, y, selection, absolute = True)
     cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
-    cmds.delete(Selection, constructionHistory=True)
     
 def scalebyZ(desiredWidth):
     dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
@@ -84,15 +79,12 @@ def scalebyZ(desiredWidth):
         return
     #get size of selection 
     xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selection[0], q=True, ws=True, bb=True)
-    width = abs(xmax - xmin)
     height = abs(zmax - zmin)
-    depth = abs(ymax - ymin)
     #figure out how much the selection needs to be scaled by
     w = height / 16
     y = dWidth / w
     #scale selection and delete previous history
     cmds.scale(y, y, y, selection, absolute = True)
     cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
-    cmds.delete(Selection, constructionHistory=True)
 
 UDKScaleUI()
