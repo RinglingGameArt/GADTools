@@ -1,0 +1,59 @@
+import maya.cmds as cmds
+
+def generateCombine(*args):
+    
+    selection = cmds.ls(sl=True)
+
+    first_object = selection[0]
+
+    # gather information 
+    pivot = cmds.xform(first_object, q=True, worldSpace=True, rotatePivot=True)
+
+    new_mesh = cmds.polyUnite(ch=False)
+
+    selection = cmds.ls(sl=True) #makes a list of the selected#
+    for selected in selection:  #picks out the selected in the entire list of selection#
+        cmds.xform(selected, cp=True) 
+        bounding_box = cmds.xform(selected , q=True, boundingBox=True, worldSpace=True) #limits the movement to the object selected#
+        xmin, ymin, zmin, xmax, ymax, zmax = bounding_box # 0 1 2 3 4 5 #
+        cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True) #moves and rotates the pivot to the center of the object#
+        
+        
+        
+def generatePivot(*args):
+    
+    for selected in selection:  #picks out the selected in the entire list of selection#
+        cmds.xform(selected, cp=True, worldSpace=True) #limits the movement to the object selected#
+        #cmds.move(0,0,0) #moves pivot point to center of the world# 
+        cmds.move([selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True) #moves and rotates the pivot to the center of the object#
+        
+def generateCenter(*args):
+    
+    cmds.makeIdentity(apply=True, t=1,s=1,r=1) #freezes transforms to 1#
+    trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
+    cmds.move(-1*trans[0], -1*trans[1], -1*trans[2]) #multiplies and moves everything by -1#
+        
+    
+def generatePivotUI():
+    window_name = "pivotUI"
+    
+    if cmds.window(window_name, q=True, exists = True):
+        cmds.deleteUI(window_name)
+        
+    my_window = cmds.window(window_name, title="Pivot Tools")
+    
+    cmds.columnLayout(adj=True)
+    
+    cmds.button("b1", label="combineCenter", c=generateCombine) #generates the button for combine center#
+    cmds.button("b2", label="centerPivot", c=generatePivot) #generates the button for move the pivot to the center of the object#
+    cmds.button("b3", label="worldCenter", c=generateCenter) #generates the button for moving object to world center#
+    
+    cmds.showWindow(my_window)
+
+generatePivotUI() #generates the window#
+
+
+            
+
+        
+
