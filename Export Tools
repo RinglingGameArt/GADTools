@@ -1,0 +1,183 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM          
+..                                                                                        
+  MMMMMMMMMMM MMMMM  7MMMM.MMMMMMMMM=.     .ZMMMMD     ,MMMMMMMMM.  OMMMMMMMMMMM          
+  MMMMMMMMMMM. MMMMMMMMMM. MMMMMMMMMMMM  MMMMMMMMMMMM. ,MMMMMMMMMMM+OMMMMMMMMMMM          
+  MMMM         .MMMMMMM:   MMMM  . MMMM=DMMMM. . MMMMM ,MMM.   ZMMMM    MMMM              
+  MMMMMMMMMM      MMMM     MMMMMMMMMMMM.MMMM=.   .MMMM.,MMMMMMMMMMM .   MMMM              
+  MMMM     ..   MMMMMMM:   MMMMMMMMMM.  MMMMM    DMMMM.,MMMMMMMMMMM     MMMM              
+  MMMMMMMMMMM+ MMMMMMMMMM  MMMM    .     MMMMMMMMMMMM..,MMM    MMMM.    MMMM              
+  MMMMMMMMMMM+MMMM7 .MMMMM MMMM           :MMMMMMMM~.  ,MMM    MMMM?    MMMM              
+             ..   .  .      . .            .   . ...   .   .   ..   .      .              
+                                                                                                     
+                                                                                                     
+                                                                                                     
+       8MMMMMMMMMMM   MMMMMMMM.      MMMMMMMM    MMMM        .MMMMMMMMO                   
+       OMMMMMMMMMMM MMMMMMMMMMMM.  MMMMMMMMMMMM  MMMM       MMMMM ,MMMMM                  
+           MMMM.  .+MMMM.  .+MMMM MMMMM    MMMMM.MMMM       MMMMMMMM    .                 
+           MMMM    MMMM~   . MMMM MMMM:     MMMM MMMM        :MMMMMMMMMM?                 
+           MMMM    ~MMMM.   DMMMM.MMMMM    MMMMM MMMM        .  . . MMMMM.                
+           MMMM     MMMMMMMMMMMM ..MMMMMMMMMMMM..MMMMMMMMMMIIMMMMMMMMMMMM.                
+           MMMM     .. MMMMMM8 ..  . +MMMMMM+..  MMMMMMMMMMI  =MMMMMMM~  .                
+                       ..  ...         ..                 ..    ...                       
+                               
+                               ||- Version 1.0 -||
+                            ||- by Kevin Reichwein -||
+ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+import maya.cmds as cmds
+import logging
+
+
+#create UI function
+def generateExportTool():
+    
+    #create window name
+    window_name = "exportTools"
+    
+    #if window exists, delete previous
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    
+    #create new window
+    my_window = cmds.window(window_name, title="Export Tools")
+    
+    #create new button layout and buttons
+    cmds.columnLayout(adj=True)
+    
+    cmds.button(label="\n PERFORM ALL \n -and- \n EXPORT SELECTION \n", bgc=[1, 0.7, 0.7], c=performAll)
+    
+    cmds.text(label="------------------------------------")
+    cmds.text(label="Location")
+    cmds.text(label="------------------------------------")
+
+    cmds.button(label="Object to World Center", c=objectToWorldCenter)
+    cmds.button(label="Pivot to World Center", c=pivotToWorldCenter)
+    cmds.button(label="Freeze Transformation", c=freezeTransformation)
+    
+    cmds.text(label=" ")
+    cmds.text(label="------------------------------------")
+    cmds.text(label="Normals")
+    cmds.text(label="------------------------------------")
+    cmds.button(label="Conform", c=conformNormals)
+    cmds.button(label="Unlock", c=unlockNormals)
+
+    cmds.text(label=" ")
+    cmds.text(label="------------------------------------")
+    cmds.text(label="History")
+    cmds.text(label="------------------------------------")
+    cmds.button(label="Delete", c=deleteHistory)
+    
+    cmds.text(label=" ")
+    cmds.text(label="  |                   |")
+    cmds.text(label="  |                   |")
+    cmds.text(label="  |                   |")
+    cmds.text(label="  |                   |")
+    cmds.text(label="  \  |  /            \  |  /")
+    cmds.text(label="  \ | /              \ | /")
+    cmds.text(label="  \|/                \|/")
+    cmds.text(label="  |                   |")
+    cmds.text(label="------------------------------------")
+    cmds.button(label="\n Export Selection \n", bgc=[0.7, 1, 0.7], c=exportSelection)
+    
+    #show the window
+    cmds.showWindow(window_name)
+
+#Create functions to be called by buttons  
+
+def performAll(unused=None):
+    performFunction("performA")
+
+def objectToWorldCenter(unused=None):
+    performFunction("objectWC")
+    
+def pivotToWorldCenter(unused=None):
+    performFunction("pivotWC")
+    
+def freezeTransformation(unused=None):
+    performFunction("freezeT")
+      
+def conformNormals(unused=None):
+    performFunction("conformN")
+
+def unlockNormals(unused=None):
+    performFunction("unlockN")
+
+def deleteHistory(unused=None):
+    performFunction("deleteH")
+    
+def exportSelection(unused=None):
+    performFunction("export")
+        
+#Create Funtions    
+def performFunction(mode="conformN"):
+    
+    #Get Selection
+    selection = cmds.ls(sl=True)
+    print selection
+    
+    #Log Error if nothing is selected
+    if not selection:
+        logging.error("Please SELECT something, you useless sack of fecal matter.")
+    
+    
+    #----------Decide What Happens depending on the Mode that is chosen------------#
+    
+    if mode == "performA":
+        for sel in selection:
+            cmds.move( 0, 0, 0, absolute=True, ws=True) 
+            cmds.move(0, 0, 0, ".scalePivot", ".rotatePivot", absolute=True)
+            cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0, pn=1) 
+            cmds.select(sel + ".f[*]")
+            cmds.polyNormal(normalMode=2)
+            cmds.select(sel + ".vtx[*]")
+            cmds.polyNormalPerVertex(ufn=True)
+            cmds.select(sel)
+            cmds.delete(all=True, constructionHistory=True)
+            cmds.ExportSelection()
+
+#Object to World Center Function    
+    if mode == "objectWC":
+        for sel in selection:
+            cmds.move( 0, 0, 0, absolute=True, ws=True)
+            
+#Pivot to World Center Function
+    if mode == "pivotWC":
+        for sel in selection:
+            cmds.move(0, 0, 0, ".scalePivot", ".rotatePivot", absolute=True)
+           
+#Freeze Transformation Function     
+    if mode == "freezeT":
+        for sel in selection:
+            cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0, pn=1)
+            
+#Delete History Function          
+    if mode == "deleteH":
+        for sel in selection:
+            cmds.delete(all=True, constructionHistory=True)
+    
+#Conform Normals Function   
+    if mode == "conformN":
+        for sel in selection:
+            cmds.select(sel + ".f[*]")
+            cmds.polyNormal(normalMode=2)
+            cmds.select(sel)
+        
+#Unlock Normals Function
+    if mode == "unlockN":
+        for sel in selection:
+            cmds.select(sel + ".vtx[*]")
+            cmds.polyNormalPerVertex(ufn=True)
+            cmds.select(sel)
+                    
+#Open Export Selection Function           
+    if mode == "export":
+        for sel in selection:
+            cmds.ExportSelection()
+            
+generateExportTool()
+
+
