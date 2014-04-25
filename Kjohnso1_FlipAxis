@@ -1,0 +1,147 @@
+import maya.cmds as cmds
+import math
+
+def myWindow() :
+	"""
+		This function creates a Maya window.
+	"""
+	
+	my = 'my'		# Name of the window
+	
+	# Check if window already exists. If it exists, delete it.
+	if cmds.window(my, ex=True) :
+		cmds.deleteUI(my, window=True)
+	
+	# Build window
+	cmds.window(
+		my, 
+		title='Flip Axis',
+		wh=(580, 370),
+		retain=False)
+		
+	mainContainer = cmds.frameLayout(
+		labelVisible=False,
+		borderVisible=False,
+		marginHeight=6,
+		marginWidth=6)
+		 
+	# This subContainer prevents frameLayout children to scale in height
+	subContainer = cmds.columnLayout(
+		adjustableColumn=True,
+		rowSpacing=4)
+	# SUBCONTAINER CHILDREN : DESCRIPTION FRAME, CURRENT VALUES FRAME, SETTINGS FRAME
+	
+	# DESCRIPTION FRAME
+	cmds.frameLayout(
+		label="Description",
+		borderStyle="etchedIn",
+		marginHeight=3,
+		labelIndent=5)
+	cmds.columnLayout(
+		columnAttach=("left", 18))
+	cmds.text(
+		l="This tool will flip the axis using degrees.",
+		align='left')
+	cmds.setParent(subContainer)
+	
+	
+	
+	
+	
+	# Settings section
+	cmds.frameLayout(
+		label='Settings',
+		borderStyle='etchedIn',
+		marginHeight=3,
+		labelIndent=5)
+	cmds.columnLayout(
+		adjustableColumn=True)
+	xDeg = cmds.floatSliderGrp(
+		l='X axis (deg):',
+		field=True,
+		minValue=-360, maxValue=360,
+		fieldMinValue=-360, fieldMaxValue=360,
+		columnAttach3=('right', 'both', 'left'),
+		columnOffset3=(6, 0, 0))
+	yDeg = cmds.floatSliderGrp(
+		l='Y axis (deg):',
+		field=True,
+		minValue=-360, maxValue=360,
+		fieldMinValue=-360, fieldMaxValue=360,
+		columnAttach3=('right', 'both', 'left'),
+		columnOffset3=(6, 0, 0))
+	zDeg = cmds.floatSliderGrp(
+		l='Z axis (deg):',
+		field=True,
+		minValue=-360, maxValue=360,
+		fieldMinValue=-360, fieldMaxValue=360,
+		columnAttach3=('right', 'both', 'left'),
+		columnOffset3=(6, 0, 0))
+	
+		
+	cmds.separator(height=10, style='in')	 
+	
+	
+	
+	# Buttons section
+	form = cmds.formLayout(numberOfDivisions=100)
+	
+	def clickCmd(buttonValue) :
+		degToRad(xDeg, yDeg, zDeg, relativeOpt, applyFor)
+	applyButton = cmds.button(
+		l='Apply',
+		height=26,
+		c=clickCmd)
+		
+	closeCmd = 'cmds.deleteUI("%s", window=True)' % my	
+	closeButton = cmds.button(
+		l='Close',
+		height=26, 
+		c=closeCmd)
+	
+	cmds.formLayout(
+		form, edit=True,
+		attachForm=(
+			(applyButton, 'bottom', 0),
+			(applyButton, 'left', 0),
+			(closeButton, 'bottom', 0),
+			(closeButton, 'right', 0)),
+		attachPosition=(
+			(applyButton, 'right', 2, 50),
+			(closeButton, 'left', 2, 50)))
+	
+	cmds.showWindow(my)
+
+
+def degToRad(xDeg, yDeg, zDeg, relativeOpt, applyFor) :
+    
+    
+    
+	"""
+		This function is flipping the axis, however it's not functional at the moment, still trying to convert a similar code from MEL.
+		
+	"""
+
+def willFlipAxis(axis):
+	lsSel=ls(sl=1)
+	flip=0.0
+	for i in lsSel:
+		getS=getAttr(str(i) + ".scale")
+		if axis == 0:
+			flip=getS[0] - (getS[0] * 2)
+			setAttr((str(i) + ".scaleX"),
+				flip)
+			
+		
+		else axis == 1:
+			flip=getS[1] - (getS[1] * 2)
+			setAttr((str(i) + ".scaleY"),
+				flip)
+			
+		
+		    else axis == 2:
+			flip=getS[2] - (getS[2] * 2)
+			setAttr((str(i) + ".scaleZ"),
+				flip)
+
+myWindow()
