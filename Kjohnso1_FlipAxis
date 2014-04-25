@@ -29,9 +29,9 @@ def myWindow() :
 	subContainer = cmds.columnLayout(
 		adjustableColumn=True,
 		rowSpacing=4)
-	# SUBCONTAINER CHILDREN : DESCRIPTION FRAME, CURRENT VALUES FRAME, SETTINGS FRAME
 	
-	# DESCRIPTION FRAME
+	
+	# Description settings
 	cmds.frameLayout(
 		label="Description",
 		borderStyle="etchedIn",
