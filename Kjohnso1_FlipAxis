@@ -30,8 +30,7 @@ def myWindow() :
 		adjustableColumn=True,
 		rowSpacing=4)
 	
-	
-	# Description settings
+	# DESCRIPTION FRAME
 	cmds.frameLayout(
 		label="Description",
 		borderStyle="etchedIn",
@@ -121,27 +120,27 @@ def degToRad(xDeg, yDeg, zDeg, relativeOpt, applyFor) :
 		This function is flipping the axis, however it's not functional at the moment, still trying to convert a similar code from MEL.
 		
 	"""
-
 def willFlipAxis(axis):
-	lsSel=ls(sl=1)
+	selection = cmds.ls(sl=True)
 	flip=0.0
-	for i in lsSel:
-		getS=getAttr(str(i) + ".scale")
-		if axis == 0:
+	for i in selection:
+		cmds.getAttr(str(i) + ".scale")
+		if axis = 0:
 			flip=getS[0] - (getS[0] * 2)
-			setAttr((str(i) + ".scaleX"),
+			cmds.setAttr((str(i) + ".scaleX"),
 				flip)
 			
 		
-		else axis == 1:
+		else axis = 1:
 			flip=getS[1] - (getS[1] * 2)
-			setAttr((str(i) + ".scaleY"),
+			cmds.setAttr((str(i) + ".scaleY"),
 				flip)
 			
 		
-		    else axis == 2:
+		    else axis = 2:
 			flip=getS[2] - (getS[2] * 2)
-			setAttr((str(i) + ".scaleZ"),
+			cmds.setAttr((str(i) + ".scaleZ"),
 				flip)
+
 
 myWindow()
