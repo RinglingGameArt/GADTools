@@ -1,0 +1,30 @@
+"""
+
+Quinn's Maya to UDK Units Calculator!
+
+Just select a mesh and run this to see how big your mesh will be in feet on the X, Y, and Z axis in UDK!!
+
+"""
+
+# Import the Maya Command List.
+import maya.cmds as cmds
+
+# The selected object is True.
+selected = cmds.ls(sl=True)\
+
+# Query the object's dimension data.
+xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selected[0], q=True, ws=True, bb=True)
+    
+# Get the XYZ length in Maya Units.
+width = abs(xmax - xmin)
+height = abs(ymax - ymin)
+depth = abs(zmax - zmin)
+
+# Divide said numbers by 16. (Which gives you their length in UDK Units)
+udkWidth = width / 16
+udkHeight = height / 16
+udkDepth = depth / 16
+
+# Display the results in a polite, easy-to-read fashion!
+
+print '\n', 'In UDK, this mesh is..', '\n', '\n', udkWidth, ' Unreal Units(feet) on the X Axis!', '\n', '\n', udkHeight, ' Unreal Units(feet) on the Y Axis!', '\n', '\n', udkDepth, ' Unreal Units(feet) on the Z Axis!'
