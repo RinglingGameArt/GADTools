@@ -1,6 +1,6 @@
 import maya.cmds as cmds
 import maya.mel as mel
-
+import random as random
 
 selection = cmds.ls(sl=True)
 for sel in selection:
@@ -11,6 +11,7 @@ selection = cmds.ls(selection=True, long=True)
 myVerts = mel.eval("getVerts;")
 
 for vert in myVerts:
+    
     min = -0.2
     
     max = 0.2
@@ -23,4 +24,3 @@ for vert in myVerts:
     cmds.move(randNumX, randNumY, randNumZ, relative=True)
 
 cmds.select(selection, replace=True)
-polyCleanupOptions
