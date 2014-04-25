@@ -40,7 +40,7 @@ def myWindow() :
 	cmds.columnLayout(
 		columnAttach=("left", 18))
 	cmds.text(
-		l="This tool will flip the axis using degrees.",
+		l="This tool will flip the axis.",
 		align='left')
 	cmds.setParent(subContainer)
 	
@@ -57,21 +57,21 @@ def myWindow() :
 	cmds.columnLayout(
 		adjustableColumn=True)
 	xDeg = cmds.floatSliderGrp(
-		l='X axis (deg):',
+		l='X axis :',
 		field=True,
 		minValue=-360, maxValue=360,
 		fieldMinValue=-360, fieldMaxValue=360,
 		columnAttach3=('right', 'both', 'left'),
 		columnOffset3=(6, 0, 0))
 	yDeg = cmds.floatSliderGrp(
-		l='Y axis (deg):',
+		l='Y axis :',
 		field=True,
 		minValue=-360, maxValue=360,
 		fieldMinValue=-360, fieldMaxValue=360,
 		columnAttach3=('right', 'both', 'left'),
 		columnOffset3=(6, 0, 0))
 	zDeg = cmds.floatSliderGrp(
-		l='Z axis (deg):',
+		l='Z axis ):',
 		field=True,
 		minValue=-360, maxValue=360,
 		fieldMinValue=-360, fieldMaxValue=360,
