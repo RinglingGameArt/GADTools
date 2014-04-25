@@ -1,0 +1,90 @@
+"""
+    Automatic joint weighting tool
+    By: Dylan Collins
+        Requirements:
+        All objects that make up the vehicle grouped under (transform? name for this?) "Entire_Vehicle" 
+        Wheel objects named
+            B_L_Tire
+            B_R_Tire
+            F_L_Tire
+            F_R_Tire
+        Axle objects named
+            B_L_Axle
+            B_R_Axle
+            F_L_Axle
+            F_R_Axle  
+"""
+
+import maya.cmds as cmds
+import maya.OpenMaya as OpenMaya
+import logging
+
+checkNames = ["Main_Root", "B_R_Tire", "B_R_Axle", "B_L_Tire", "B_L_Axle", "F_R_Tire", "F_R_Axle", "F_L_Tire", "F_L_Axle"]
+jointCheck = cmds.ls(checkNames, typ="joint")
+
+for check in checkNames:
+    if cmds.objExists(check + "Shape"):
+        print "Found " + check
+    else:
+        print "Couldn't find " + check
+        OpenMaya.MGlobal.displayError("Couldn't find mesh: " + check)
+
+#Get vertex selection of main_root mesh
+mainRootName = "Main_Root"
+mainRoot = cmds.ls(mainRootName, typ="joint")
+mainRootMesh = cmds.ls(mainRootName, dag=True, typ="mesh")
+mainRootMeshVertexCount = cmds.polyEvaluate(mainRootMesh, vertex=True)
+mainRootMeshVertex = mainRootName + ".vtx[0:"+str(mainRootMeshVertexCount)+"]"
+cmds.sets(mainRootMeshVertex, n="mainRootMeshSet")
+mainRootMeshSet = cmds.ls("mainRootMeshSet", sets=True)
+
+vehicleGeometry = cmds.ls(geometry=True)
+vehicleTransforms = cmds.listRelatives(vehicleGeometry, p=True, path=True)
+
+#select all children of Main_Root
+jointSelection = cmds.listRelatives(mainRoot, children=True)
+#iterate through selection and flood fill with 1 for each part
+for sel in jointSelection:
+    
+#Take selection name of joint and convert to mesh selection to find matching mesh
+    meshSelection = cmds.ls(sel, dag=True, typ="mesh")
+#Ignore Link_01 and Gun_Base, they will be weighted to Main_Root
+    if sel in ("Link_01", "Gun_Base"):
+        print ("Ignoring " + sel)
+#Create selection sets for each mesh
+    else:
+        selectionSetName = (sel + "Set")    #Add 'Set' to the end of each selection name (B_L_AxelSet)
+        vertexCount01 = cmds.polyEvaluate(meshSelection, vertex=True)    #Get vertex count of each mesh
+        selVertex01 = sel + ".vtx[0:"+str(vertexCount01)+"]"    #Get all vertex names for selection
+        cmds.sets(selVertex01, n=selectionSetName)    #Create set from verticies
+        print ("Creating Selection set for " + sel)
+        
+"""
+Combine meshes and bind skin
+"""
+cmds.select(vehicleTransforms)
+combinedVehicle = cmds.polyUnite(ch=False)
+cmds.xform(combinedVehicle, rotatePivot=(0, 0, 0))
+#binds skin, weights all joints to 1 on main root
+cmds.skinCluster(mainRoot, combinedVehicle)
+totalVertexCount= cmds.polyEvaluate(combinedVehicle, vertex=True)
+selTotalVertex = combinedVehicle[0] + ".vtx[0:"+str(totalVertexCount)+"]"
+cmds.skinPercent("skinCluster1", selTotalVertex, transformValue=(mainRootName, 0.0))
+cmds.skinCluster("skinCluster1", e=True, inf=mainRootName)
+cmds.skinCluster("skinCluster1", e=True, inf="B_L_Axle", dr=3.0)
+cmds.skinCluster("skinCluster1", e=True, inf="B_R_Axle", dr=3.0)
+cmds.skinCluster("skinCluster1", e=True, inf="F_L_Axle", dr=3.0)
+cmds.skinCluster("skinCluster1", e=True, inf="F_R_Axle", dr=3.0)
+cmds.skinPercent("skinCluster1", mainRootMeshSet, transformValue=(mainRootName, 1.0))
+"""
+Weight mesh based on selection sets
+"""
+weightSets = cmds.ls("*Set", sets=True)    #Select any sets in scene
+for weightSel in weightSets:
+    if weightSel in ("defaultLightSet", "defaultObjectSet", "skinCluster1Set", "mainRootMeshSet"):    #ignore default sets
+        print "skipping"
+    else:
+        print ("Selecting " + weightSel)
+        jointName = weightSel.replace("Set", "")    #Get name of corresponding joint by removing "Set" from the end pf the string
+        print jointName
+        cmds.skinPercent("skinCluster1", weightSel, transformValue=(jointName, 1.0))    #Set selection weight to 1 for corresponding vertex
