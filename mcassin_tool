@@ -1,0 +1,63 @@
+import maya.cmds as cmds
+import maya.mel as mel
+import logging
+
+def selectionToolUI():
+     window_name = "SelectionTool"
+    
+     if cmds.window(window_name, q=True, exists=True):
+         cmds.deleteUI(window_name)
+            
+     my_window = cmds.window(window_name, title="SelectionTool")
+     cmds.columnLayout(adj=True)
+     cmds.text("Select every other...")
+     cmds.button(label="Face", c=selectionFace)
+     cmds.button(label="Edge", c=selectionEdge)
+     cmds.button(label="Vertex", c=selectionVertex)
+       
+        
+     cmds.showWindow(my_window)
+
+
+def selectionFace(unused = None):
+    selectionTool('face')
+
+def selectionEdge(unused = None):
+    selectionTool('edge')
+
+def selectionVertex(unused = None):
+    selectionTool('vertex')
+
+def selectionTool(mode=None):
+    
+    if mode == "face":
+        selected = cmds.ls(sl=True)
+        if not selected:
+            logging.error("Please Select an Object")
+            return
+        mesh = cmds.ls(sl=True)[0]
+        faceCount = cmds.polyEvaluate(f=True)
+        for face in range(0,faceCount,2):
+            cmds.select("%s.f[%s]" % (mesh,face), add=True)
+    
+    if mode == "edge":
+        selected = cmds.ls(sl=True)
+        if selected:
+            logging.error("Please Select an Edge")
+            return
+        if not selected:
+            logging.error("Please Select an Object")
+            return
+        mel.eval('polySelectEdgesEveryN "edgeRing" 2')
+
+        
+    if mode == "vertex":
+        selected = cmds.ls(sl=True)
+        if not selected:
+            logging.error("Please Select an Object")
+        mesh = cmds.ls(sl=True)[0]
+        faceCount = cmds.polyEvaluate(v=True)
+        for face in range(0,faceCount,2):
+            cmds.select("%s.vtx[%s]" % (mesh,face), add=True)
+   
+selectionToolUI()
