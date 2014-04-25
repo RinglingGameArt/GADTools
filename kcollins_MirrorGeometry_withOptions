@@ -1,0 +1,45 @@
+"""Mirroring Geometry"""
+
+import maya.cmds as cmds
+
+#SELECT YOUR AXIS HERE***
+global mode
+mode = "-X"
+
+#Have object selected
+
+
+#if not selected:
+#    logging.error("Select something!")
+#    return
+
+#Mirror your object
+
+
+def mirrorGeom(*args):
+    
+    selectArray = cmds.ls(sl=True)
+    
+    #***Axis Glossary: Pick which axis you want to mirror your object and insert it on line 5
+    for index in selectArray:
+        
+        if mode == "+X":
+            cmds.polyMirrorFace(index, direction=0)
+        
+        if mode == "-X":
+            cmds.polyMirrorFace(index, direction=1)
+        
+        if mode == "+y":
+            cmds.polyMirrorFace(index, direction=2)
+        
+        if mode == "-y":
+            cmds.polyMirrorFace(index, direction=3)
+        
+        if mode == "+Z":
+            cmds.polyMirrorFace(index, direction=4)
+        
+        if mode == "-Z":
+            cmds.polyMirrorFace(index, direction=5)
+   
+
+mirrorGeom()
