@@ -1,0 +1,84 @@
+#////////////////////////////////////////////////////////////////////
+#
+#
+#                         Zach's Tool Bag!
+#
+#
+#////////////////////////////////////////////////////////////////////
+#
+#                    Created by Zachary Forrest
+#
+#////////////////////////////////////////////////////////////////////
+#
+#
+#////////////////////////////////////////////////////////////////////
+#
+#                           Description:
+#    
+#        This script opens up a UI that contains multiple tools.
+#
+#////////////////////////////////////////////////////////////////////
+#
+#                          Installation:
+#    
+#        Simply highlight everything and drag it to shelf. 
+#                        No funky business.
+#
+#////////////////////////////////////////////////////////////////////
+import maya.cmds as cmds
+
+def UI():
+    
+    #Check to see if window exists
+    if cmds.window("Zach", exists = True):
+        cmds.deleteUI("Zach")
+
+
+#Button 1 Function
+def Button1(*args):
+    cmds.move(0, 0, 0)
+    cmds.xform(cp=1)
+    cmds.FreezeTransformations
+    cmds.DeleteAllHistory
+    
+#Button 2 Function
+def Button2(*args):
+    cmds.grid(reset = True)
+    
+#Button 3 Function
+def Button3(*args):
+    cmds.grid(size = '3m', sp = '6')
+    
+#Button 4 Function
+def Button4(*args):
+    cmds.setAttr('lambert1.transparency', 0.5, 0.5, 0.5, type='double3')
+
+   
+#Button 5 Function
+def Button5(*args):
+    cmds.setAttr('lambert1.transparency', 0, 0, 0, type='double3')
+    
+#Create window
+window = cmds.window("Zach", title = "Zach's Tool Bag", width = 250, height = 300, mxb = False, sizeable = False)
+
+#Layout
+mainLayout = cmds.columnLayout(width = 250, height = 300)
+
+#Buttons
+cmds.button("Move to Origin, CP, FT, Clear History", width = 250, height = 50, bgc = (.5, 0, 0), command = Button1)
+cmds.frameLayout("                     : | GRIDS | :", collapse = False, collapsable = True)
+cmds.button("Default Maya Grid", width = 250, height = 50, bgc = (0, .5, 0), command = Button2)
+cmds.button("UDK Grid", width = 250, height = 50, bgc = (0, .55, 0), command = Button3)
+cmds.frameLayout("                     : | XRAY | :", collapse = False, collapsable = True)
+cmds.button("Xray On", width = 250, height = 50, bgc = (0, 0, .5), command = Button4)
+cmds.button("Xray Off", width = 250, height = 50, bgc = (0, 0, .5), command = Button5)
+cmds.text(" Zachary Forrest Copyrighted 2014")
+
+#Show window0
+cmds.showWindow(window)
+
+#////////////////////////////////////////////////////////////////////
+#
+#                            END SCRIPT
+#
+#////////////////////////////////////////////////////////////////////
