@@ -1,0 +1,12 @@
+import maya.cmds as cmds #imports maya comands
+
+selection = cmds.ls(sl=True) 
+for selected in selection: 
+  
+    cmds.xform(selected, cp=1) #moves pivot point to center of the selected object
+    cmds.move(0, 0, 0, selection[0]+".scalePivot",selection[0]+".rotatePivot", absolute=True) #move pivot point to the center of the world
+    cmds.duplicate(selected) #Duplicates the selected object
+    cmds.FreezeTransformations(selected) #zeroes out all the transforms
+    cmds.scale( -1, 1, 1 ) #moves the selected objects across to the other side of the X axis
+    cmds.select( all=True) #selects all objects in the scene
+    cmds.CombinePolygons(selected=True) #combines the selected
