@@ -1,0 +1,64 @@
+import maya.cmds as cmds
+
+def UI():
+    
+    
+    if cmds.window("mike8", exists = True):
+        cmds.deleteUI("mike8")
+
+window = cmds.window("mike8", title = "Mike's Tool", width = 250, height = 300, mxb = False, sizeable = False)
+
+mainLayout = cmds.rowColumnLayout(numberOfColumns = 2, width = 250, height = 300)
+
+def checkMesh(*pArgs):
+    cmds.xform(cp=1)
+    cmds.move(0, 0, 0)(*pArgs)
+    
+def confirmMesh(*args):
+    cmds.duplicate(n='YYY')
+    cmds.select('YYY*')
+    cmds.xform(cp=1)
+    cmds.move( 0, 0, 0 )(*args)
+    
+def selectRotation(*args):
+    cmds.polyPlane( n='XXX', sx=1, sy=1, w=10, h=10, ax=(0, 0, 1))
+    
+def confirmRotation(*args):
+    rX = cmds.getAttr("XXX.rotateX")
+    rY = cmds.getAttr("XXX.rotateY")
+    rZ = cmds.getAttr("XXX.rotateZ")
+    print rX, rY, rZ (*args)
+        
+def resetIt(pArgs):
+    cmds.delete('YYY*')
+    cmds.delete('XXX*')
+
+    cmds.showWindow() 
+cmds.keyTangent( inTangentType='linear', outTangentType='linear' )        
+    
+cmds.button(label="Select Mesh",bgc = (.93906,.86328,.39844), command = checkMesh)
+cmds.button(label="Confirm Mesh",bgc = (.896, .66172, .0546875), command = confirmMesh)
+cmds.button(label="Set Rotation",bgc = (.88672, .65625, .386712875),  command = selectRotation)
+cmds.button(label="Confirm Rotation",bgc = (.9140625, .375, .1875), command = confirmRotation)
+cmds.text(label="Slices:")
+cmds.intSliderGrp("FFF", label='intField',width=200, field=True, cc=intChecker)    
+#/////////////////////////////////////////////////////
+#                       RESET
+#/////////////////////////////////////////////////////  
+cmds.button( label='RESET', bgc=(.5,.2,.2), command = resetIt )
+cmds.button( label='ENTER', bgc=(.3,.5,.2), command=intChecker)
+#//////////////////////////////////////////////
+#                    FINAL
+#//////////////////////////////////////////////    
+def intChecker(*pArgs):
+    FFFvalue = cmds.intField( "FFF",query=True, value=True)
+    print FFFvalue      
+    (x[4] - x[5])/abs(abs(FFFvalue) + (FFFvalue/FFFvalue))
+    cmds.select('XXX*')
+    cmds.move(0, 0, 0)
+    cmds.duplicate(smartTransform)
+    cmds.polyUnite('XXX*')
+    cmds.xform(cp=1)
+    cmds.polyCBoolOp( 'YYY', 'ZZZ', op=2)    
+  
+cmds.showWindow(window)
