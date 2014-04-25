@@ -5,6 +5,10 @@ Will scale size of selection on X, Y, or Z axis. Ballin'.
 
 import maya.cmds as cmds
 import logging
+global sg1
+global sg2
+global sg3
+global selection
 
 def UDKScaleUI():  
     window_name = "UDKScaleTool"
@@ -12,18 +16,18 @@ def UDKScaleUI():
     if cmds.window(window_name, q=True, exists=True):
         cmds.deleteUI(window_name)
         
-    my_window = cmds.window(window_name, title = "UDK Scale Tool")
-    #constructs the layout of said window, names the float field group so its results can be passed into showTime
+    my_window = cmds.window(window_name, title = "UDK Scale Tool", s=False, widthHeight =(300,150))
+    #constructs the layout of said window
     cmds.columnLayout(adj = True)
-    desiredWidth = cmds.floatFieldGrp(numberOfFields=1, label = "Desired Size in UDK:", el= "ft", precision = 3)
-    cmds.text(label = 'This tool will scale your object by X, Y, or Z in a uniform manner.')
-    cmds.button(label='Scale by X', command=lambda _:scalebyX(desiredWidth))
-    cmds.button(label='Scale by Y', command=lambda _:scalebyY(desiredWidth))
-    cmds.button(label='Scale by Z', command=lambda _:scalebyZ(desiredWidth))
+    cmds.floatFieldGrp("scaleX", numberOfFields=1, label = "Desired Size in UDK:", el= "ft", precision = 2)
+    cmds.text(label = '\n This tool will scale your object by X, Y, or Z in a uniform manner. \n', align = 'center')
+    cmds.button(label='Scale by X', command=scalebyX)
+    cmds.button(label='Scale by Y', command=scalebyY)
+    cmds.button(label='Scale by Z', command=scalebyZ)
     cmds.showWindow(my_window)
 
-def scalebyX(desiredWidth):
-    dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
+def scalebyX(*args):
+    sg1 = cmds.floatFieldGrp("scaleX", query=True, value=True)[0]
     #error checking to make sure the grid is the right size
     spacing = cmds.grid(query=True, spacing=True)
     if spacing != 16:
@@ -38,15 +42,13 @@ def scalebyX(desiredWidth):
     width = abs(xmax - xmin)
     #figure out how much the selection needs to be scaled by
     w = width / 16
-    y = dWidth / w
-    z = w * y
-    a = dWidth * 16
+    y = sg1 / w
     #scale selection and delete previous history
     cmds.scale(y, y, y, selection, absolute = True)
     cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
     
-def scalebyY(desiredWidth):
-    dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
+def scalebyY(*args):
+    sg2 = cmds.floatFieldGrp("scaleX", query=True, value=True)[0]
     #error checking to make sure the grid is the right size
     spacing = cmds.grid(query=True, spacing=True)
     if spacing != 16:
@@ -61,13 +63,13 @@ def scalebyY(desiredWidth):
     depth = abs(ymax - ymin)
     #figure out how much the selection needs to be scaled by
     w = depth / 16
-    y = dWidth / w
+    y = sg2 / w
     #scale selection and delete previous history
     cmds.scale(y, y, y, selection, absolute = True)
     cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
     
-def scalebyZ(desiredWidth):
-    dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
+def scalebyZ(*args):
+    sg3 = cmds.floatFieldGrp("scaleX", query=True, value=True)[0]
     #error checking to make sure the grid is the right size
     spacing = cmds.grid(query=True, spacing=True)
     if spacing != 16:
@@ -82,7 +84,7 @@ def scalebyZ(desiredWidth):
     height = abs(zmax - zmin)
     #figure out how much the selection needs to be scaled by
     w = height / 16
-    y = dWidth / w
+    y = sg3 / w
     #scale selection and delete previous history
     cmds.scale(y, y, y, selection, absolute = True)
     cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
