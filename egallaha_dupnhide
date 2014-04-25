@@ -1,0 +1,12 @@
+import maya.cmds as cmds
+
+#checks for selection
+selection = cmds.ls(sl=True)
+for selected in selection:
+    
+    cmds.duplicate(selected)
+    #duplicates selection (obviously)
+    cmds.createDisplayLayer(name ="LowRes")
+    #creates a layer called "LowRes", specifically for blockouts or something like that
+    cmds.setAttr('LowRes.visibility', 0)
+    #hides the layer called "LowRes". This script technically only works once. But changing the name isn't a huge deal.
