@@ -4,7 +4,7 @@ global sg1  # global variables do avoid scope issues
 global rb1
 global rb1value
 global sg1value
-
+ 
 def simpleUI(): # build our UI
           
     # declare the name of our window object
