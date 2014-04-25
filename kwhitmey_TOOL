@@ -1,0 +1,22 @@
+import maya.cmds as cmds
+
+selection = cmds.ls(sl=True) 
+     #allows for maya commands to come in as actual commands in the script editor 
+     
+for selected in selection:
+     cmds.polyOptions (selected, displayNormal=True) 
+     #allows for face normals to be displayed on screen--- WORKING  
+     
+     cmds.polyNormalPerVertex (ufn=True)
+     #using another maya commmad to unlock the normals of the model for precise editing without affecting nearby edges and normals
+    
+     backface = cmds.polyOptions (selected, q=True, bc=True)
+     if backface[0]: 
+         cmds.polyOptions (selected, fb=True)
+     else:     
+         cmds.polyOptions (selected, bc=True)
+     #using yet another maya commad, this if/else statement is basically an argument performing a round about way to create backface culling
+     #if the backfacing is true, then the faces fullback command will be activated, otherwise, bc is still true in the Query 
+     #allows for faces to not be seen if the normals are reversed, creates a visible "hole" 
+     
+     #Whole script creates a way for complex models' normlas to be tested properly
