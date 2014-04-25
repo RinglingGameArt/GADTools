@@ -1,0 +1,139 @@
+'''Ryan Baker's Tool'''
+
+'''in order to run you need the following
+ 1. multiple objects selected
+ '''
+#master export tool
+
+#import maya commands
+import maya.cmds as cmds
+
+
+
+
+'''UI Interface'''
+#Ryan'sTool UI INTERFACE!!!
+
+#controls multiple window popup
+window_name = "controlsWindow"
+#queries if a window is already open
+if cmds.window(window_name, q=True, exists=True):
+       cmds.deleteUI(window_name)
+       
+#name at top of box
+my_window = cmds.window(window_name, title="Ryan's Tool!")
+#columns
+my_layout = cmds.columnLayout(parent=my_window, adj=True) 
+
+cmds.text(label="Master Export Tool")
+
+
+cmds.checkBox(label="Clean Combine")
+cmds.checkBox(label="Freeze Transforms")
+cmds.checkBox(label="Delete History")
+
+'''Debuggging
+#radial button
+collection = cmds.radioCollection()
+collection_layout = cmds.rowLayout(numberOfColumns = 4 )
+cmds.text(label = "radioButton", p=collection_layout)
+
+def Centerpivot(unused=None):
+    apply("Centerpivot")
+    
+def CenterpivotBase(unused=None):
+    apply("CenterpivotBase")
+
+def SetPivottocorner(unused=None):
+    apply("SetPivottocorner")
+
+rbl = cmds.radioButton(label="CenterPivot", c=Centerpivot)
+rb2 = cmds.radioButton(label="CenterPivotBase", c=CenterpivotBase)
+rb3 = cmds.radioButton(label="SetPivottoCorner", c=SetPivottocorner)
+'''
+
+cmds.showWindow(my_window)
+
+
+
+
+''' CleanCombine''' 
+#cleanCombine
+
+#grab your selection
+selection = cmds.ls(sl=True)
+    
+#first or last object?
+first_object = selection[0]
+    
+#gather information
+pivot = cmds.xform(first_object, q=True, worldSpace=True, rotatePivot=True)
+display_layers = cmds.listConnections(first_object, type="displayLayers")
+print display_layers
+    
+#combine without history
+new_mesh = cmds.polyUnite(ch=False)
+    
+cmds.xform(new_mesh, rotatePivot=pivot)
+if display_layers:
+    cmds.editDisplayLayerMembers(display_layers[0], new_mesh)
+        
+#rename 
+cmds.rename(new_mesh, first_object)
+
+
+''' Pivots '''  
+#move pivot to center
+cmds.xform(cp=True)
+
+
+#move pivot to ymin
+selection = cmds.ls(sl=True)
+for selected in selection:
+    cmds.xform(cp=True)#centers pivot before bringing it down
+
+    bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
+    #move pivot to Y min of selection
+    xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+    # bounding_box[0] < number here corrispomds to the min or max value
+    cmds.move(bounding_box[1], [selected + ".scalePivot", selected +".rotatePivot"], y=True, absolute=True)
+    
+
+''' still being debugged
+#move pivot to boundingbox/corner
+curSel = cmds.ls(long=True, selection=True, type=True)
+
+for n in curSel:
+    bbox = cmds.exactWorldBoundingBox(n)
+    cmds.xform(n=True, cp=1)
+#bbox = xyz min and xyz max
+bbox = cmds.exactWorldBoundingBox(n=True)
+bottom = [(bbx[0] + bbox[3])/2, bbox[1], (bbox[2] + bbox[5])/2]
+cmds.xform(n=True, piv=bottom, ws=True)
+'''
+
+''' Transforms ''' 
+#freeze transforms
+cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+
+
+
+''' history ''' 
+#delete history
+#DeleteAllHistory
+cmds.delete(all=True, constructionHistory=True)
+
+
+
+''' Export ''' 
+#export as FBX
+cmds.file(rename="exp.fbx")
+cmds.file(force=True, exportSelected=True, type="FBX", relativeNamespace=":A:B")
+
+
+    
+
+
+
+
+
