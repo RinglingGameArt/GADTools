@@ -1,0 +1,51 @@
+import maya.cmds as cmds
+
+global sg1  
+global rb1
+global sg1value
+#global values    
+def simpleUI():
+  
+    window_name = "controlsWindow"
+    
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    my_window = cmds.window(window_name, title="Object World Orientation Changer")
+    #name of the window
+    my_layout = cmds.columnLayout(parent=my_window, adj=True)
+    
+    collection = cmds.radioCollection()
+    collectionLayout = cmds.rowLayout(numberOfColumns=4)
+    cmds.text(parent = my_layout, l = "Zup Orientation", p=collectionLayout)
+    cmds.text(parent = my_layout, l = "", p=collectionLayout)
+    cmds.radioButton( "rb1", label='Y', p=collectionLayout, cc=radioButtonCheck1)
+    cmds.radioButton( "rb2", label='Z', p=collectionLayout)
+    #naming of the radio buttons and the overall layout next to the radio buttons
+    cmds.showWindow(my_window)
+   
+def radioButtonCheck1 (unused = None):
+    
+    global rb1value
+    
+    rb1value = cmds.radioButton("rb1", query=True, select=True)
+    
+    if rb1value == True:
+        selection = cmds.ls(sl=True)
+        for sel in selection:
+            cmds.upAxis(axis='y',rv=True)
+     #it makes the object tun its upAxis into y
+      #If said Rv isn't there then the view gets weird
+          #Rv=Rotate View
+
+    else:
+        selection = cmds.ls(sl=True)
+        for sel in selection:
+            cmds.upAxis(axis='z',rv=True)
+        #it makes the object tun its upAxis into Z#
+      #If said Rv isn't there then the view gets weird#
+      #Rv=Rotate View#
+
+ 
+simpleUI()    
+    
