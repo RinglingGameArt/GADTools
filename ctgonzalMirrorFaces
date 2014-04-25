@@ -1,3 +1,5 @@
+"""Mirorr Faces Tool. Still in progress"""
+
 import maya.cmds as cmds
 
 def mirrorFacesUI():
@@ -31,7 +33,15 @@ def mirrorFaces(mode="-X"):
     selected_faces = cmds.polyChipOff (dup=True, kft=True)
     
     for faces in selected_faces:
-        cmds.select(clear=True)
+        cmds.select(clear=True) 
+          
+           """ for some reason, you need to toggle between component mode
+     and object mode in order for the script to select and duplicate
+     just the face.
+     If you do not toggle, you will get an error message stating that
+     cmds.polySeparate needs exactly one polygonal object or polygonal
+     face from another object."""
+        
         cmds.selectMode(component=True)
         cmds.selectMode(object=True) 
         
