@@ -1,0 +1,19 @@
+import maya.cmds as cmds
+
+
+def Compare():
+    
+    for i in range(1):
+        elapsedTime = round(cmds.timerX() + .5)
+
+    # Amount of time passed based off of 5 min intervals (300 seconds)
+        minuteTime = abs(elapsedTime / 300) 
+
+    # Rounded up the time passed based off of 5 min intervals (300 seconds)
+        roundedMinTime = round(elapsedTime / 300 + .4)
+    
+        if minuteTime == roundedMinTime:
+            print "DeleteNonDefHistory"
+            cmds.BakeAllNonDefHistory(True)
+
+cmds.scriptJob(idleEvent = Compare)
