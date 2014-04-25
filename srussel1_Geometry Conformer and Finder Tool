@@ -1,0 +1,53 @@
+#Normal Check and Conforming
+
+import maya.cmds as cmds
+
+#Adds All Geometry, Lights, and Cameras to the List
+cmds.ls( geometry=True, lights=True, cameras=True )
+print cmds.ls( geometry=True, lights=True, cameras=True )
+
+#Select All
+cmds.select( all=True )
+
+cmds.select(allDagObjects=True)
+cmds.displaySurface( flipNormals=True)
+
+#Display Pins To Show Normals Facing Outward
+cmds.polyOptions( ao=True, dn=True, db=True, bc=True )
+
+
+#Reverse Normals
+
+import maya.cmds as cmds
+
+selection = cmds.ls(sl=True)
+for selected in selection:
+    
+    cmds.polyNormal(selected, normalMode=2)
+    
+    
+#Poly Face Type Finder
+
+
+#Enter the corresponding input for each type of face. 
+
+import maya.cmds as cmds
+
+print 'To detect Tris and Ngons'
+
+face = raw_input('Enter "TRIS" for Triangles, "QUADS" for Quads, or "NGONS" for Ngons: ').upper() 
+
+if face == 'TRIS': 
+    cmds.polySelectConstraint(m = 3, t = 8, sz = 1)
+    cmds.polySelectConstraint(m = 0)
+
+if face == 'QUADS': 
+    cmds.polySelectConstraint(m = 3, t = 8, sz = 2)
+    cmds.polySelectConstraint(m = 0)
+
+elif face == 'NGONS': 
+    cmds.polySelectConstraint(m = 3, t = 8, sz = 3)
+    cmds.polySelectConstraint(m = 0)
+    
+else:
+    print 'Error! Enter proper input such as tris, quads, or ngons.'
