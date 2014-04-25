@@ -1,0 +1,79 @@
+import maya.cmds as cmds # importing maya commands
+
+
+
+def generateCollisionUI(): # generating UI window
+    window_name = "collisionUI" # naming window
+    
+    if cmds.window(window_name, q=True, exists = True): # calling on window
+        cmds.deleteUI(window_name) #delete UI
+        
+    my_window = cmds.window(window_name, title="N-Gon Assassinator") # title name of window
+    
+    cmds.columnLayout(adj=True)
+    
+    cmds.button(label="Triangulate N-Gons", c=generateTri)
+    cmds.button(label="Quadrangulate N-Gons", c=generateQuad)
+    cmds.button(label="Delete N-Gons", c=generateDelete)
+    
+    cmds.showWindow(my_window) # show the window
+
+
+
+def generateTri(unused=None):
+    generatePoly("Tri")
+    
+def generateQuad(unused=None):
+    generatePoly(mode="Quad")
+        
+def generateDelete(unused=None):
+    generatePoly(mode="Delete")
+
+
+
+def generatePoly(mode="Tri"):
+    
+    if mode == "Tri":
+        
+        cmds.polySelectConstraint( m=3, t=8, sz=3 ) # selects all N-sided faces
+        
+        selection = cmds.ls(sl=True) # setting up a list the selected mesh
+        for selected in selection: # going through selected objects
+        
+            cmds.polyTriangulate (selected) # triangulating
+     
+    if mode == "Quad":     
+        
+        cmds.polySelectConstraint( m=3, t=8, sz=3 ) # selects all N-sided faces
+        
+        selection = cmds.ls(sl=True) # setting up a list the selected mesh
+        for selected in selection: # going through selected objects
+        
+            cmds.polyTriangulate (selected) # triangulating
+        
+        selection = cmds.ls(sl=True) # setting up a list the selected mesh
+        for selected in selection: # going through selected objects
+            
+            cmds.polyQuad (selected) # quadrangulating
+    
+    if mode == "Delete":
+    
+        cmds.polySelectConstraint( m=3, t=8, sz=3 ) # selects all N-sided faces
+        
+        selection = cmds.ls(sl=True) # setting up a list for selected objects
+        for selected in selection: # going through selected objects
+            
+            cmds.delete (selected) # deleting selected objects)
+    
+        
+    
+generateCollisionUI()
+
+    
+
+    
+
+
+    
+
+    
