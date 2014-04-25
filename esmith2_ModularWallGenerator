@@ -1,0 +1,126 @@
+import maya.cmds as cmds
+import logging
+
+def generateToolbarUI():
+    
+    window_name = "ToolboxUI"
+    #if UI window is already open, this script will delete it
+    if cmds.window(window_name, q=True, exists = True):
+        cmds.deleteUI(window_name)
+    #naming UI window    
+    my_window = cmds.window(window_name, title = "Modular Toolkit")
+   
+    #changes UI layout to an adjustible column layout
+    my_layout = cmds.columnLayout(adj=True) 
+ 
+   
+    cmds.button(label="Small", p=my_layout, c=generateBasicWall)
+    cmds.button(label="Medium", p=my_layout, c=generateMediumWall)
+    cmds.button(label="Large", p=my_layout, c=generateLargeWall)
+    cmds.button(label="Generate Sphere", p=my_layout, c=generateSphere)
+    cmds.button(label="Duplicate", p=my_layout, c=duplicateOnce)
+
+
+#opens UI window
+    cmds.showWindow(my_window)
+    
+#defines functions to plug into buttons    
+def generateBasicWall(unused=None):
+    generateWall("wall")
+def generateMediumWall(unused=None):
+    generateWall("medwall")
+def generateLargeWall(unused=None):
+    generateWall("largewall")
+def generateSphere(unused=None):
+    generateWall("sphere")
+def duplicateOnce(unused=None):
+    generateWall("duponce")
+
+    
+def generateWall(mode="b"):
+    
+    #creates a cube with the exact dimensions of 8x160x160
+    if mode == "wall":
+        cmds.polyCube(w=8, d=160, h=160, sd=4, sh=4)
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+            #grabs bounding box
+            bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
+            #list of coordinates in bounding box
+            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+            #moves pivot to bottom back corner of mesh
+            cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+            cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
+            cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
+            #freezing transformations
+            cmds.makeIdentity(apply=True, t=1,s=1,r=1)
+            #grabbing translation values
+            trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
+            #moves mesh to (0,0,0)
+            cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+            
+    if mode == "medwall":
+        #creates medium wall; rest of code description from first wall applies
+        cmds.polyCube(w=8, d=320, h=320, sd=4, sh=4)
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+            #grabs bounding box
+            bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
+            #list of coordinates in bounding box
+            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+            #moves pivot to bottom back corner of mesh
+            cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+            cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
+            cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
+            cmds.makeIdentity(apply=True, t=1,s=1,r=1)
+            trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
+            cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+            
+    if mode == "largewall":
+        #creates large wall; rest of code description from first wall applies
+        cmds.polyCube(w=16, d=480, h=480, sd=4, sh=4)
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+            #grabs bounding box
+            bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
+            #list of coordinates in bounding box
+            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+            #moves pivot to bottom back corner of mesh
+            cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+            cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
+            cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
+            cmds.makeIdentity(apply=True, t=1,s=1,r=1)
+            trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
+            cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+            
+    if mode == "sphere":
+        #creates a 30x30x30 square
+        cmds.polyCube(w=160, d=160, h=160)
+        #smooths cube by 2 subdivisions to create a sphere with good topology
+        cmds.polySmooth(dv = 2)
+        
+    if mode =="duponce":
+        selection = cmds.ls(sl=True)
+            #duplicates selection and separates it from original mesh along the y axis
+        for selected in selection:
+            #duplicating mesh
+            cmds.duplicate(selected)
+            #grabbing x, y, and z translation values
+            pos=cmds.xform(selected, q=True, t=True)
+            #grabbing bounding box values
+            xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selected, q=True, ws=True, bb=True)
+            #defining width of mesh using bounding box
+            width = abs(ymax - ymin)
+            #determining how far the duplicated mesh needs to be translated: subtracting pos from width
+            newy=pos[1]-width*1.25
+            #moving the mesh based on pos array and newy
+            cmds.xform(selected, t=[pos[0], newy, pos[2]])        
+
+
+generateToolbarUI()
+
+
+
+
+
+
