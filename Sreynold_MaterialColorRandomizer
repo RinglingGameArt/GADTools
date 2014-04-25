@@ -1,0 +1,32 @@
+#Sarah Lynn Reynolds
+#Randomizes color of a material.
+#Create new material. Then, Assign desired material to object. Select the object and finally run script.
+
+import maya.cmds as cmds
+#Imports random function
+import random
+
+#Current selection
+selection = cmds.ls(sl=True)
+
+
+#For selected object finds material assigned to object in hypershade.
+for selected in selection:
+    cmds.hyperShade(smn=True)
+    materials = cmds.ls(sl=True)
+    for mat in materials:
+        attrs = cmds.listAttr(mat, v=True, k=True, u=True)
+        for a in attrs:
+
+#Once material is found asigns random RGB value in the range of 0-1.            
+            
+            r = random.uniform(0,1)
+            g = random.uniform(0,1)
+            b = random.uniform(0,1)
+                       
+            if a == "colorR":
+                cmds.setAttr(mat + ".colorR", r)
+            if a == "colorG":
+                cmds.setAttr(mat + ".colorG", g)
+            if a == "colorB":
+                cmds.setAttr(mat + ".colorB", b)
