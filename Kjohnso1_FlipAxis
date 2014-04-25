@@ -86,7 +86,7 @@ def myWindow() :
 	form = cmds.formLayout(numberOfDivisions=100)
 	
 	def clickCmd(buttonValue) :
-		degToRad(xDeg, yDeg, zDeg, applyFor)
+		degToRad(xDeg, yDeg, zDeg, relativeOpt, applyFor)
 	applyButton = cmds.button(
 		l='Apply',
 		height=26,
@@ -112,7 +112,7 @@ def myWindow() :
 	cmds.showWindow(my)
 
 
-def degToRad(xDeg, yDeg, zDeg, applyFor) :
+def degToRad(xDeg, yDeg, zDeg, relativeOpt, applyFor) :
     
     
     
