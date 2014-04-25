@@ -1,0 +1,98 @@
+"""
+JWHamer UDK Scale tool!
+Will scale size of selection on X, Y, or Z axis. Ballin'.
+"""
+
+import maya.cmds as cmds
+import logging
+
+def UDKScaleUI():  
+    window_name = "UDKScaleTool"
+    #builds the window    
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    my_window = cmds.window(window_name, title = "UDK Scale Tool")
+    #constructs the layout of said window, names the float field group so its results can be passed into showTime
+    cmds.columnLayout(adj = True)
+    desiredWidth = cmds.floatFieldGrp(numberOfFields=1, label = "Desired Width in UDK:", el= "ft", precision = 3)
+    cmds.button(label='Scale by X', command=lambda _:scalebyX(desiredWidth))
+    cmds.button(label='Scale by Y', command=lambda _:scalebyY(desiredWidth))
+    cmds.button(label='Scale by Z', command=lambda _:scalebyZ(desiredWidth))
+    cmds.showWindow(my_window)
+
+def scalebyX(desiredWidth):
+    dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
+    #error checking to make sure the grid is the right size
+    spacing = cmds.grid(query=True, spacing=True)
+    if spacing != 16:
+        cmds.warning("Grid is wrong size. Please set spacing to 16.")
+    #error checking to make sure something is selected
+    selection = cmds.ls(sl=True)
+    if not selection:
+        logging.error("Please select something!")
+        return
+    #get size of selection 
+    xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selection[0], q=True, ws=True, bb=True)
+    width = abs(xmax - xmin)
+    height = abs(zmax - zmin)
+    depth = abs(ymax - ymin)
+    #figure out how much the selection needs to be scaled by
+    w = width / 16
+    y = dWidth / w
+    z = w * y
+    a = dWidth * 16
+    #scale selection and delete previous history
+    cmds.scale(y, y, y, selection, absolute = True)
+    cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+    cmds.delete(Selection, constructionHistory=True)
+    
+def scalebyY(desiredWidth):
+    dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
+    #error checking to make sure the grid is the right size
+    spacing = cmds.grid(query=True, spacing=True)
+    if spacing != 16:
+        cmds.warning("Grid is wrong size. Please set spacing to 16.")
+    #error checking to make sure something is selected
+    selection = cmds.ls(sl=True)
+    if not selection:
+        logging.error("Please select something!")
+        return
+    #get size of selection 
+    xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selection[0], q=True, ws=True, bb=True)
+    width = abs(xmax - xmin)
+    height = abs(zmax - zmin)
+    depth = abs(ymax - ymin)
+    #figure out how much the selection needs to be scaled by
+    w = depth / 16
+    y = dWidth / w
+    #scale selection and delete previous history
+    cmds.scale(y, y, y, selection, absolute = True)
+    cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+    cmds.delete(Selection, constructionHistory=True)
+    
+def scalebyZ(desiredWidth):
+    dWidth = cmds.floatFieldGrp(desiredWidth, query=True, value=True)[0]
+    #error checking to make sure the grid is the right size
+    spacing = cmds.grid(query=True, spacing=True)
+    if spacing != 16:
+        cmds.warning("Grid is wrong size. Please set spacing to 16.")
+    #error checking to make sure something is selected
+    selection = cmds.ls(sl=True)
+    if not selection:
+        logging.error("Please select something!")
+        return
+    #get size of selection 
+    xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selection[0], q=True, ws=True, bb=True)
+    width = abs(xmax - xmin)
+    height = abs(zmax - zmin)
+    depth = abs(ymax - ymin)
+    #figure out how much the selection needs to be scaled by
+    w = height / 16
+    y = dWidth / w
+    #scale selection and delete previous history
+    cmds.scale(y, y, y, selection, absolute = True)
+    cmds.makeIdentity(apply=True, t=1, r=1, s=1, n=0)
+    cmds.delete(Selection, constructionHistory=True)
+
+UDKScaleUI()
