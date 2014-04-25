@@ -1,0 +1,26 @@
+import maya.cmds as cmds
+import maya.mel as mel
+
+
+selection = cmds.ls(sl=True)
+for sel in selection:
+    cmds.polySplitVertex()
+  
+
+selection = cmds.ls(selection=True, long=True)
+myVerts = mel.eval("getVerts;")
+
+for vert in myVerts:
+    min = -0.2
+    
+    max = 0.2
+    
+    randNumX = random.uniform(min, max)
+    randNumY = random.uniform(min, max)
+    randNumZ = random.uniform(min, max)
+
+    cmds.select(vert, replace=True)
+    cmds.move(randNumX, randNumY, randNumZ, relative=True)
+
+cmds.select(selection, replace=True)
+polyCleanupOptions
