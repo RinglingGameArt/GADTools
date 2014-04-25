@@ -1,0 +1,10 @@
+//Sarah Lynn Reynolds
+//Automatically deletes the history of an object when it is selected. 
+//Make changes to an object. Run the script. Select object, history should be removed. 
+
+
+
+//Scriptjob acts as a trigger. 
+//When the condition is 'true' in this case, the command executes. This is the condition. 
+//When an object is selected in the scene the condition is 'true'. "DeleteHistory" is the command that deletes history.
+scriptJob -conditionTrue "SomethingSelected" "DeleteHistory delete -ch;";
