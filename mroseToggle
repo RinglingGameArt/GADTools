@@ -2,6 +2,10 @@
 By Megan Rose
 Toggles Normals
 but in a simple code format
+original code was to toggle Wireframe and Normals in all four viewports
+Instructions:
+Select an object
+use code
 '''
 
 import maya.cmds as cmds
