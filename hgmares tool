@@ -1,0 +1,74 @@
+//MEL script
+window -title "Hugo's Tool" -widthHeight 300 200 myWindows11;
+
+formLayout -numberOfDivisions 100 myForm;
+     radioButtonGrp 
+          -numberOfRadioButtons 3
+          -label "selection kind" 
+          -labelArray3 "edge" "face" "vertex"
+          -select 1
+     myRadBtnGrp;
+
+     intSliderGrp -label "N" -field true 
+          -minValue 2 -maxValue 100
+          -value 2
+     mySlider;
+
+     button -label "select through loop" -command "selectLoop()" myBtn1; 
+     button -label "select parallel" -command "selectParallel()" myBtn2; 
+    
+
+formLayout -edit 
+     -attachForm myRadBtnGrp "top" 10
+     -attachForm myRadBtnGrp "left" -50
+     -attachForm mySlider "top" 40
+     -attachForm mySlider "left" -50
+     -attachForm myBtn1 "bottom" 10 
+     -attachForm myBtn1 "left" 10
+     -attachForm myBtn2 "bottom" 10
+     -attachForm myBtn2 "right" 50
+myForm; 
+showWindow myWindows11;
+
+proc selectLoop() {
+     int $sliderValue = `intSliderGrp -q -value mySlider`;
+     if (`radioButtonGrp -q -select myRadBtnGrp` == 1){
+        
+         polySelectEdgesEveryN "edgeLoop" $sliderValue;
+     }
+     if (`radioButtonGrp -q -select myRadBtnGrp` == 2) {
+         string $mesh[] = `ls -sl`;
+         int $faceCount = `polyEvaluate -f`;
+         for ($i = 0; $i < $faceCount; $i++) {
+         if(fmod($i, 2) == 0) {
+         select -add ($mesh[0] + ".[" + $i + "]");
+}
+}
+         
+     }
+     if (`radioButtonGrp -q -select myRadBtnGrp` == 3) {
+          polySelectEdgesEveryN "edgeLoop" $sliderValue;
+          string $select [] = `ls -sl`;//makes a list of the actual selection (selected edges)
+          string $conVert [] = `polyListComponentConversion -tv $select`;//converts it to vertices in an array
+          select -r $conVert;//selects the vertices
+     }
+}
+
+proc selectParallel() {
+     int $sliderValue = `intSliderGrp -q -value mySlider`;
+     if (`radioButtonGrp -q -select myRadBtnGrp` == 1){
+        
+         polySelectEdgesEveryN "edgeRing" $sliderValue;
+     }
+     if (`radioButtonGrp -q -select myRadBtnGrp` == 2) {
+         
+     }
+     if (`radioButtonGrp -q -select myRadBtnGrp` == 3) {
+         polySelectEdgesEveryN "edgeRing" $sliderValue;
+         string $select [] = `ls -sl`;//makes a list of the actual selection (selected edges)
+         string $conVert [] = `polyListComponentConversion -tv $select`;//converts it to vertices in an array
+         select -r $conVert;//selects the vertices
+     }
+}
+
+     
