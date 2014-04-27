@@ -1,7 +1,7 @@
 #////////////////////////////////////////////////////////////////////
 #
 #
-#                         Zach's Tool Bag!
+#                       Zach's Tool Bag v2.0!
 #
 #
 #////////////////////////////////////////////////////////////////////
@@ -25,6 +25,21 @@
 #                        No funky business.
 #
 #////////////////////////////////////////////////////////////////////
+#
+#                            Changelog:
+#
+#           v.2.0:
+#                -Made Xray function work on selected object
+#                -Changed color of MO,CP,FT,CH button
+#                -Moved MO,CP,FT,CH button
+#                -Changed grouping of buttons
+#                -Changed color of wording in UDK Grid
+#                -Changed Grid Spacing in UDK Grid
+#                -Added complete combine button
+#                -Renamed grouping "Xray" to Bonus Tools
+#                -Added Changelog
+#
+#////////////////////////////////////////////////////////////////////
 import maya.cmds as cmds
 
 def UI():
@@ -32,7 +47,6 @@ def UI():
     #Check to see if window exists
     if cmds.window("Zach", exists = True):
         cmds.deleteUI("Zach")
-
 
 #Button 1 Function
 def Button1(*args):
@@ -47,32 +61,41 @@ def Button2(*args):
     
 #Button 3 Function
 def Button3(*args):
-    cmds.grid(size = '3m', sp = '6')
+    cmds.grid(size = '2m', sp = '24')
     
 #Button 4 Function
 def Button4(*args):
-    cmds.setAttr('lambert1.transparency', 0.5, 0.5, 0.5, type='double3')
-
-   
+    selection = cmds.ls(sl=True)
+    for selected in selection:
+        xray = cmds.displaySurface(selected, q=True, xRay=True)
+        cmds.displaySurface(selected, xRay= not xray[0])
+        
 #Button 5 Function
 def Button5(*args):
-    cmds.setAttr('lambert1.transparency', 0, 0, 0, type='double3')
-    
+    selection = cmds.ls(sl=True)
+    first_object = selection[0]
+    pivote = cmds.xform(first_object, q=True, worldSpace=True, rotatePivot=True)
+    display_layers = cmds.ls(first_object, type="displayLayer")
+    print display_layers
+    new_mesh = cmds.polyUnite(ch=False)
+    cmds.xform(new_mesh)
+    cmds.rename(new_mesh, first_object)
+
 #Create window
-window = cmds.window("Zach", title = "Zach's Tool Bag", width = 250, height = 300, mxb = False, sizeable = False)
+window = cmds.window("zach8", title = "Zach's Tool Bag", width = 250, height = 300, mxb = False, sizeable = False)
 
 #Layout
 mainLayout = cmds.columnLayout(width = 250, height = 300)
 
 #Buttons
-cmds.button("Move to Origin, CP, FT, Clear History", width = 250, height = 50, bgc = (.5, 0, 0), command = Button1)
-cmds.frameLayout("                     : | GRIDS | :", collapse = False, collapsable = True)
+cmds.frameLayout("                        : | Grids | :", collapse = False, collapsable = True)
 cmds.button("Default Maya Grid", width = 250, height = 50, bgc = (0, .5, 0), command = Button2)
-cmds.button("UDK Grid", width = 250, height = 50, bgc = (0, .55, 0), command = Button3)
-cmds.frameLayout("                     : | XRAY | :", collapse = False, collapsable = True)
-cmds.button("Xray On", width = 250, height = 50, bgc = (0, 0, .5), command = Button4)
-cmds.button("Xray Off", width = 250, height = 50, bgc = (0, 0, .5), command = Button5)
-cmds.text(" Zachary Forrest Copyrighted 2014")
+cmds.button("UDK Grid", width = 250, height = 50, bgc = (0, .5, 0), command = Button3)
+cmds.frameLayout("                 : | Bonus Tools | :", collapse = False, collapsable = True)
+cmds.button("Move to Origin, CP, FT, Clear History", width = 250, height = 50, bgc = (0, 0, .5), command = Button1)
+cmds.button("Xray", width = 250, height = 50, bgc = (0, 0, .5), command = Button4)
+cmds.button("Combine", width = 250, height = 50, bgc = (0, 0, .5), command = Button5)
+cmds.text(" Zachary Forrest Copyrighted 2014")   
 
 #Show window0
 cmds.showWindow(window)
