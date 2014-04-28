@@ -1,0 +1,73 @@
+import maya.cmds as cmds # Import Commands
+
+
+
+def generateCollisionUI(): # Create UI Window
+    window_name = "collisionUI" # Window Name
+    
+    if cmds.window(window_name, q=True, exists = True):
+        cmds.deleteUI(window_name) #Delete Previous Window
+        
+    my_window = cmds.window(window_name, title="Geometry Locator Conformer") # Name At Window Header
+    
+    cmds.columnLayout(adj=True)
+    
+    cmds.button(label="Locate Tris", c=findTris)
+    cmds.button(label="Locate Quads", c=findQuads)
+    cmds.button(label="Locate N-Gons", c=findNgons)
+    cmds.button(label="Conform All Normals", c=Conform)
+    
+    cmds.showWindow(my_window) # Display Window
+
+def findTris(unused=None):
+    generatePoly("Tri")
+    
+def findQuads(unused=None):
+    generatePoly(mode="Quad")
+        
+def findNgons(unused=None):
+    generatePoly(mode="Ngon")
+
+def Conform(unused=None) :
+    generatePoly("Conformer")
+
+
+def generatePoly(mode="Tri"): #Search For Triangles On All Shapes
+    
+    if mode == "Tri":
+        cmds.select( all=True )
+        cmds.select(allDagObjects=True)
+        cmds.displaySurface( flipNormals=True)
+        
+        cmds.polySelectConstraint(m = 3, t = 8, sz = 1)
+        cmds.polySelectConstraint(m = 0)
+     
+    if mode == "Quad": #Search For Quads On All Shapes    
+        
+        cmds.select( all=True )
+        cmds.select(allDagObjects=True)
+        cmds.displaySurface( flipNormals=True)
+        
+        cmds.polySelectConstraint(m = 3, t = 8, sz = 2)
+        cmds.polySelectConstraint(m = 0)
+    
+    if mode == "Ngon": #Search For Ngons On All Shapes
+    
+        cmds.select( all=True )
+        cmds.select(allDagObjects=True)
+        cmds.displaySurface( flipNormals=True)
+        
+        cmds.polySelectConstraint(m = 3, t = 8, sz = 3)
+        cmds.polySelectConstraint(m = 0)
+    
+    if mode == "Conformer": #Conform All Face Normals In Scene
+        cmds.select( all=True )
+        cmds.select(allDagObjects=True)
+        cmds.displaySurface( flipNormals=True)
+        
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+    
+            cmds.polyNormal(selected, normalMode=2)            
+    
+generateCollisionUI()
