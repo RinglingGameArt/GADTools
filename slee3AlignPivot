@@ -1,7 +1,7 @@
 # Soojin Lee 
 # GA 240_01 
 # This script helps to make align pivot with multiple objects
-# also can change all of the pivot location bottom XYZ
+# also can change all of the pivot location bottom XYZ / good for the modular kits 
 # selected multiple objects and run the script. 
 
 
@@ -12,6 +12,7 @@ for selected in selection:
     
     # center the pivot
     cmds.xform(selected, cp=True)
+    #make the pivot middle bottom first _ pivot confusing!! 
         
     # determine the bounding box so we know where to put our pivot
     # bounding_box = xmin ymin zmin xmax ymax zmax.
@@ -44,6 +45,15 @@ def myFunction3(*args):
     piv = cmds.xform (selected , piv=True, q=True, ws=True) 
     cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
 
+def myFunction4(*args):
+    cmds.xform(selected, cp=True)
+    piv = cmds.xform (selected , piv=True, q=True, ws=True) 
+    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
+    
+def myFunction5(*args):
+    cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+    piv = cmds.xform (selected , piv=True, q=True, ws=True) 
+    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
 
 #widget setting
 window_name = "slee3AlignPivot"
@@ -60,11 +70,15 @@ cmds.window( window_name, edit=True, wh=(250,200))#resizing the size of window
 my_layout = cmds.columnLayout(parent=my_window, adj=True)
 
 cmds.text(label="") 
-cmds.text(label="Pivot location") 
-cmds.text(label="") 
+cmds.text(label="Choose Pivot location")
+cmds.text(label="Automatically align the all pivots")
+cmds.text(label="")
+cmds.button(label="Center", command=myFunction4)
+cmds.button(label="Bottom Center", command=myFunction5)
 cmds.button(label="X", command=myFunction1) #create button on my window! 
 cmds.button(label="Y", command=myFunction2)
 cmds.button(label="Z", command=myFunction3)
+cmds.text(label="") 
 #also can uses it as the space between the other texts / useful / make it nice layout!
 cmds.text(label="") 
 
