@@ -45,12 +45,12 @@ def myFunction3(*args):
     piv = cmds.xform (selected , piv=True, q=True, ws=True) 
     cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
 
-def myFunction4(*args):
+def myFunction4(*args): #new!
     cmds.xform(selected, cp=True)
     piv = cmds.xform (selected , piv=True, q=True, ws=True) 
     cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
     
-def myFunction5(*args):
+def myFunction5(*args): #new!
     cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
     piv = cmds.xform (selected , piv=True, q=True, ws=True) 
     cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
