@@ -1,6 +1,7 @@
 #Mike Marra
 #Intial Maya Setup for UDK Script
-#Sets up the preferences commonly used in Maya for working with UDK
+#Sets up the preferences commonly used in maya for working with UDK
+'''Run this script on a new scene'''
 
 import maya.cmds as cmds
 # Enables polygon borders and sets the edge width to 4 #
@@ -28,3 +29,7 @@ cmds.setAttr('sideShape.farClipPlane', 100000)
 cmds.grid(spacing=16, d=1)
 # To change the grid length and width #
 cmds.grid(size=512)
+# Turns off the What's New Highlight Settings window at startup
+cmds.whatsNewHighlight(showStartupDialog=False)
+# Sets the view back to default. The same as if you were to hit the home button on the viewcube
+cmds.viewSet('persp', animate=True, home=True)
