@@ -14,7 +14,7 @@ if cmds.filterExpand(sm=31): #31 = verts
     cmds.polyAverageVertex(i=0, ch=True)
     suf = cmds.listHistory()[1].replace("polyAverageVertex", "")
     print suf
-    cmds.dragAttrContext('myDragAttrContext', e=True, ct=pAV)
+    cmds.dragAttrContext('myDragAttrContext', e=True, ct=pAV) #something wrong here, fix
     cmds.setToolTo('myDragAttrContext')
 
 else:
