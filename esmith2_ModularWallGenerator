@@ -1,5 +1,32 @@
+""" 
+        Modular Wall Kit Generator
+
+            Script by:
+                Lizzie Smith
+                
+///////Description:///////
+    Creates Modular walls, roofs, and spheres for easier modeling, and separates a duplicated mesh from the original
+    
+    
+    ///v.2.0 changes:///
+        
+        -Made UI simpler and added radio buttons
+        -added roof option
+        -added option to rotate a duplicated mesh
+        
+        
+"""
+
+
+
 import maya.cmds as cmds
 import logging
+
+global ydiv
+global zdiv
+global small
+global medium
+global large
 
 def generateToolbarUI():
     
@@ -12,13 +39,28 @@ def generateToolbarUI():
    
     #changes UI layout to an adjustible column layout
     my_layout = cmds.columnLayout(adj=True) 
- 
-   
-    cmds.button(label="Small", p=my_layout, c=generateBasicWall)
-    cmds.button(label="Medium", p=my_layout, c=generateMediumWall)
-    cmds.button(label="Large", p=my_layout, c=generateLargeWall)
-    cmds.button(label="Generate Sphere", p=my_layout, c=generateSphere)
+    cmds.text("     ")
+    cmds.text("Division Levels")
+    cmds.text("     ")
+    #creating intSliderGroups
+    cmds.intSliderGrp("divY", label = "Y Divisions", field=True, cc=divisionsY)
+    cmds.intSliderGrp("divZ", label = "Z Divisions", field=True, cc=divisionsZ)
+    cmds.text("     ")
+
+    collection = cmds.radioCollection()
+    collectionLayout = cmds.rowLayout(numberOfColumns=5)
+    cmds.text("                                                                             ", p=collectionLayout)
+   #creating radio buttons, assigning variables to radio buttons
+    cmds.radioButton( "smallroof", label='Small ', p=collectionLayout)
+    cmds.radioButton( "medroof", label= 'Medium ', p=collectionLayout)
+    cmds.radioButton( "largeroof", label='Large ', p=collectionLayout)
+    cmds.text("                                                                             ", p=collectionLayout)
+    cmds.button(label="Wall", p=my_layout, c=generateBasicWall)
+    cmds.button(label="Roof", p=my_layout, c=generateRoof)
     cmds.button(label="Duplicate", p=my_layout, c=duplicateOnce)
+    cmds.button(label="Duplicate Clockwise", p=my_layout, c=duplicateClockwise)
+    cmds.button(label="Duplicate Counter Clockwise", p=my_layout, c=duplicateCounterClock)
+    cmds.button(label="Generate Sphere", p=my_layout, c=generateSphere)
 
 
 #opens UI window
@@ -35,64 +77,144 @@ def generateSphere(unused=None):
     generateWall("sphere")
 def duplicateOnce(unused=None):
     generateWall("duponce")
+def generateRoof(unused=None):
+    generateWall("roof")
+def duplicateClockwise(unused=None):
+    generateWall("duprotate2")
+def duplicateCounterClock(unused=None):
+    generateWall("duprotate")
+    
+    
+#defining global variables. You should copypasta your original radio button/int slider names to make sure it's accurate.
+def divisionsY (*arg):
+    ydiv = cmds.intSliderGrp("divY", query=True, value=True) 
+def divisionsZ (*arg):
+    zdiv = cmds.intSliderGrp("divZ", query=True, value=True) 
+def radioSmallRoof (*arg):
+    small = cmds.radioButton("smallroof", query=True, select=True)
+def radioMediumRoof (*arg):
+    medium = cmds.radioButton("medroof", query=True, select=True)
+def radioLargeRoof (*arg):
+    large = cmds.radioButton("largeroof", query=True, select=True)
 
     
 def generateWall(mode="b"):
+    #defining global variables again, needs to be done at the beginning of every new function
+    small = cmds.radioButton("smallroof", query=True, select=True)
+    medium = cmds.radioButton("medroof", query=True, select=True)
+    large = cmds.radioButton("largeroof", query=True, select=True)
+    ydiv = cmds.intSliderGrp("divY", query=True, value=True)
+    zdiv = cmds.intSliderGrp("divZ", query=True, value=True)  
     
-    #creates a cube with the exact dimensions of 8x160x160
+    #creates a cube with the specified dimensions
     if mode == "wall":
-        cmds.polyCube(w=8, d=160, h=160, sd=4, sh=4)
-        selection = cmds.ls(sl=True)
-        for selected in selection:
-            #grabs bounding box
-            bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
-            #list of coordinates in bounding box
-            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
-            #moves pivot to bottom back corner of mesh
-            cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
-            cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
-            cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
-            #freezing transformations
-            cmds.makeIdentity(apply=True, t=1,s=1,r=1)
-            #grabbing translation values
-            trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
-            #moves mesh to (0,0,0)
-            cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+        #for radio buttons, need an 'if' statement. use your globals again.
+        if small==True:
+            #creates small wall, with the y and z divisions defined by the global variables ydiv and zdiv
+            cmds.polyCube(w=8, d=160, h=160, sd=ydiv, sh=zdiv)
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                #grabs bounding box
+                bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
+                #list of coordinates in bounding box
+                xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+                #moves pivot to bottom back corner of mesh
+                cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+                cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
+                cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
+                #freezing transformations
+                cmds.makeIdentity(apply=True, t=1,s=1,r=1)
+                #grabbing translation values
+                trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
+                #moves mesh to (0,0,0)
+                cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+        if medium==True:
+            cmds.polyCube(w=8, d=320, h=320, sd=ydiv, sh=zdiv)
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                #grabs bounding box
+                bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
+                #list of coordinates in bounding box
+                xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+                #moves pivot to bottom back corner of mesh
+                cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+                cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
+                cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
+                cmds.makeIdentity(apply=True, t=1,s=1,r=1)
+                trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
+                cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+                
+        if large==True:         
+  
+            #creates large wall; rest of code description from first wall applies
+            cmds.polyCube(w=16, d=480, h=480, sd=ydiv, sh=zdiv)
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                #grabs bounding box
+                bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
+                #list of coordinates in bounding box
+                xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+                #moves pivot to bottom back corner of mesh
+                cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+                cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
+                cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
+                cmds.makeIdentity(apply=True, t=1,s=1,r=1)
+                trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
+                cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+                
+    if mode =="roof":
+        if small == True:
+            cmds.polyCube(w=8, d=160, h=160, sd=ydiv, sh=zdiv)
+
+            selection =cmds.ls(sl=True)
             
-    if mode == "medwall":
-        #creates medium wall; rest of code description from first wall applies
-        cmds.polyCube(w=8, d=320, h=320, sd=4, sh=4)
-        selection = cmds.ls(sl=True)
-        for selected in selection:
-            #grabs bounding box
-            bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
-            #list of coordinates in bounding box
-            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
-            #moves pivot to bottom back corner of mesh
-            cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
-            cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
-            cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
-            cmds.makeIdentity(apply=True, t=1,s=1,r=1)
-            trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
-            cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+            for selected in selection:
+                pos=cmds.xform(selected, q=True, t=True)
             
-    if mode == "largewall":
-        #creates large wall; rest of code description from first wall applies
-        cmds.polyCube(w=16, d=480, h=480, sd=4, sh=4)
-        selection = cmds.ls(sl=True)
-        for selected in selection:
-            #grabs bounding box
-            bounding_box = cmds.xform(selected, q=True, boundingBox=True, worldSpace=True)
-            #list of coordinates in bounding box
-            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
-            #moves pivot to bottom back corner of mesh
-            cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
-            cmds.move(bounding_box[1], [selected + ".scalePivot", selected + ".rotatePivot"], y=True, absolute=True)
-            cmds.move(bounding_box[3], [selected + ".scalePivot", selected + ".rotatePivot"], x=True, absolute=True)
-            cmds.makeIdentity(apply=True, t=1,s=1,r=1)
-            trans = cmds.xform(selection[0], q=True, rp=True, ws=True)
-            cmds.move(-1*trans[0], -1*trans[1], -1*trans[2])
+                xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selected, q=True, ws=True, bb=True)
             
+                width = abs(ymax - ymin)
+                height = abs(zmax - zmin)*1.25
+            
+                newy=pos[1]-width
+                cmds.xform(selected, ro=(0, 45, 0), relative=True) 
+                cmds.xform(selected, t=[0, 0, height])
+               
+        if medium==True:
+            cmds.polyCube(w=8, d=320, h=320, sd=ydiv, sh=zdiv)
+
+            selection =cmds.ls(sl=True)
+            
+            for selected in selection:
+                pos=cmds.xform(selected, q=True, t=True)
+            
+                xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selected, q=True, ws=True, bb=True)
+            
+                width = abs(ymax - ymin)
+                height = abs(zmax - zmin)*1.25
+            
+                newy=pos[1]-width
+            
+                cmds.xform(selected, ro=(0, 45, 0), relative=True) 
+                cmds.xform(selected, t=[0, 0, height]) 
+        if large ==True:
+            cmds.polyCube(w=16, d=480, h=480, sd=ydiv, sh=zdiv)
+
+            selection =cmds.ls(sl=True)
+            
+            for selected in selection:
+                pos=cmds.xform(selected, q=True, t=True)
+            
+                xmin, ymin, zmin, xmax, ymax, zmax = cmds.xform(selected, q=True, ws=True, bb=True)
+            
+                width = abs(ymax - ymin)
+                height = abs(zmax - zmin)*1.25
+            
+                newy=pos[1]-width
+            
+                cmds.xform(selected, ro=(0, 45, 0), relative=True) 
+                cmds.xform(selected, t=[0, 0, height])             
+                                       
     if mode == "sphere":
         #creates a 30x30x30 square
         cmds.polyCube(w=160, d=160, h=160)
@@ -114,7 +236,22 @@ def generateWall(mode="b"):
             #determining how far the duplicated mesh needs to be translated: subtracting pos from width
             newy=pos[1]-width*1.25
             #moving the mesh based on pos array and newy
-            cmds.xform(selected, t=[pos[0], newy, pos[2]])        
+            cmds.xform(selected, t=[pos[0], newy, pos[2]])
+    if mode =="duprotate":
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+            #takes selection
+            cmds.duplicate(selected)
+            #rotates
+            cmds.xform(selected, ro=(0, 0, -90), relative=True) 
+            #freeze transformation
+            cmds.makeIdentity(apply=True, t=1,s=1,r=1)  
+    if mode =="duprotate2":
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+            cmds.duplicate(selected)
+            cmds.xform(selected, ro=(0, 0, 90), relative=True) 
+            cmds.makeIdentity(apply=True, t=1,s=1,r=1)   
 
 
 generateToolbarUI()
