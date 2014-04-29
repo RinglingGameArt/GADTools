@@ -16,7 +16,7 @@ import maya.cmds as cmds
 p = cmds.getPanel(type='modelPanel')
 # This is looping through all of the panels we got from our getPanel
 for view in p:
-# change a model's appearance or physical materal. We take the Panels from View. Edit the displayAppearances to smoothshaded.
+# change a model's appearance or physical materal. We take the Panels from View. Edit the displayAppearances to wireframe.
 		cmds.modelEditor(view, edit=True, displayAppearance='wireframe' )
 
 
