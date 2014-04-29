@@ -1,11 +1,57 @@
 '''
 By Megan Rose
-Toggles Normals
-but in a simple code format
-original code was to toggle Wireframe and Normals in all four viewports
-Instructions:
-Select an object
-use code
+Wireframe, 
+SoftShade,
+Wireframe on Shaded and
+Toggle Normals
+in Four viewports
+'''
+
+'''
+	Toggle Wireframe
+'''
+
+import maya.cmds as cmds
+#makes P an array. ModelPanel tells getpanel we want the panels that are in sight right now.
+p = cmds.getPanel(type='modelPanel')
+# This is looping through all of the panels we got from our getPanel
+for view in p:
+# change a model's appearance or physical materal. We take the Panels from View. Edit the displayAppearances to smoothshaded.
+		cmds.modelEditor(view, edit=True, displayAppearance='wireframe' )
+
+
+'''
+	Toggle SmoothShade
+'''
+
+import maya.cmds as cmds
+#makes P an array. ModelPanel tells getpanel we want the panels that are in sight right now.
+p = cmds.getPanel(type='modelPanel')
+# This is looping through all of the panels we got from our getPanel
+for view in p:
+# change a model's appearance or physical materal. We take the Panels from View. Edit the displayAppearances to smoothshaded.
+		cmds.modelEditor(view, edit=True, displayAppearance='smoothShaded' )
+
+'''
+	Toggle wireframe On Shaded
+'''
+
+import maya.cmds as cmds
+ 
+#makes P an array. ModelPanel tells getpanel we want the panels that are in sight right now.
+p = cmds.getPanel(type='modelPanel')
+ 
+#This is looping through all of the panels we got from our getPanel
+for view in p:
+	
+        # check to see if the view currently has the wireframe shaded
+        currentState = cmds.modelEditor(view, q = True, wireframeOnShaded = True)
+
+        # change a panel's wireframe shading to the opposite of what it is currently set to
+        cmds.modelEditor(view, edit = True, wireframeOnShaded = not currentState)
+	
+'''
+	Toggle Normals       
 '''
 
 import maya.cmds as cmds
