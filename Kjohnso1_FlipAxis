@@ -1,146 +1,52 @@
 import maya.cmds as cmds
-import math
+import logging 
 
-def myWindow() :
-	"""
-		This function creates a Maya window.
-	"""
-	
-	my = 'my'		# Name of the window
-	
-	# Check if window already exists. If it exists, delete it.
-	if cmds.window(my, ex=True) :
-		cmds.deleteUI(my, window=True)
-	
-	# Build window
-	cmds.window(
-		my, 
-		title='Flip Axis',
-		wh=(580, 370),
-		retain=False)
-		
-	mainContainer = cmds.frameLayout(
-		labelVisible=False,
-		borderVisible=False,
-		marginHeight=6,
-		marginWidth=6)
-		 
-	# This subContainer prevents frameLayout children to scale in height
-	subContainer = cmds.columnLayout(
-		adjustableColumn=True,
-		rowSpacing=4)
-	
-	# DESCRIPTION FRAME
-	cmds.frameLayout(
-		label="Description",
-		borderStyle="etchedIn",
-		marginHeight=3,
-		labelIndent=5)
-	cmds.columnLayout(
-		columnAttach=("left", 18))
-	cmds.text(
-		l="This tool will flip the axis.",
-		align='left')
-	cmds.setParent(subContainer)
-	
-	
-	
-	
-	
-	# Settings section
-	cmds.frameLayout(
-		label='Settings',
-		borderStyle='etchedIn',
-		marginHeight=3,
-		labelIndent=5)
-	cmds.columnLayout(
-		adjustableColumn=True)
-	xDeg = cmds.floatSliderGrp(
-		l='X axis :',
-		field=True,
-		minValue=-360, maxValue=360,
-		fieldMinValue=-360, fieldMaxValue=360,
-		columnAttach3=('right', 'both', 'left'),
-		columnOffset3=(6, 0, 0))
-	yDeg = cmds.floatSliderGrp(
-		l='Y axis :',
-		field=True,
-		minValue=-360, maxValue=360,
-		fieldMinValue=-360, fieldMaxValue=360,
-		columnAttach3=('right', 'both', 'left'),
-		columnOffset3=(6, 0, 0))
-	zDeg = cmds.floatSliderGrp(
-		l='Z axis ):',
-		field=True,
-		minValue=-360, maxValue=360,
-		fieldMinValue=-360, fieldMaxValue=360,
-		columnAttach3=('right', 'both', 'left'),
-		columnOffset3=(6, 0, 0))
-	
-		
-	cmds.separator(height=10, style='in')	 
-	
-	
-	
-	# Buttons section
-	form = cmds.formLayout(numberOfDivisions=100)
-	
-	def clickCmd(buttonValue) :
-		degToRad(xDeg, yDeg, zDeg, relativeOpt, applyFor)
-	applyButton = cmds.button(
-		l='Apply',
-		height=26,
-		c=clickCmd)
-		
-	closeCmd = 'cmds.deleteUI("%s", window=True)' % my	
-	closeButton = cmds.button(
-		l='Close',
-		height=26, 
-		c=closeCmd)
-	
-	cmds.formLayout(
-		form, edit=True,
-		attachForm=(
-			(applyButton, 'bottom', 0),
-			(applyButton, 'left', 0),
-			(closeButton, 'bottom', 0),
-			(closeButton, 'right', 0)),
-		attachPosition=(
-			(applyButton, 'right', 2, 50),
-			(closeButton, 'left', 2, 50)))
-	
-	cmds.showWindow(my)
+def generateCollisionUI():
 
-
-def degToRad(xDeg, yDeg, zDeg, relativeOpt, applyFor) :
+    window_name = "collisionUI"
     
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    my_window = cmds.window(window_name, title="Flip Axis")
+    cmds.columnLayout(adj=True)
     
+    cmds.button(c=flipToX, l="Flip on X Axis")
+    cmds.button(c=flipToY, l="Flip on Y Axis")
+    cmds.button(c=flipToZ, l="Flip on Z Axis")
     
-	"""
-		This function is flipping the axis, however it's not functional at the moment, still trying to convert a similar code from MEL.
-		
-	"""
-def willFlipAxis(axis):
-	selection = cmds.ls(sl=True)
-	flip=0.0
-	for i in lsSel:
-		cmds.getAttr(str(i) + ".scale")
-		if axis == 0:
-			flip=getS[0] - (getS[0] * 2)
-			cmds.setAttr((str(i) + ".scaleX"),
-				flip)
-			
-		
-		else axis == 1:
-			flip=getS[1] - (getS[1] * 2)
-			cmds.setAttr((str(i) + ".scaleY"),
-				flip)
-			
-		
-		    else axis == 2:
-			flip=getS[2] - (getS[2] * 2)
-			cmds.setAttr((str(i) + ".scaleZ"),
-				flip)
+    cmds.showWindow(my_window)
 
+def flipToX(unused = None):
+    flip('X')
+    
+def flipToY(unused = None):
+    flip('Y')
+    
+def flipToZ(unused = None):
+    flip('Z')
 
-myWindow()
+def flip(mode=None):
+
+    selected = cmds.ls(sl=True)
+    if not selected:
+        logging.error("Please Select Something")
+        return 
+    
+    if mode == "X":
+        print "x is working"
+        #cmds.setAttr((selected + ".rotateX"),90)
+        cmds.xform(r=True, ro=(90, 0, 0))
+        #cmds.scale(selected, 
+        #polyMirrorFace
+        
+    if mode == "Y":
+        print "y is working"
+        cmds.xform(r=True, ro=(0,90,0))
+        
+    if mode == "Z":
+        print "z is working"
+        cmds.xform(r=True, ro=(0,0,90))
+        
+           
+generateCollisionUI()
