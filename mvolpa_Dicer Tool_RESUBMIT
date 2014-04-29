@@ -1,0 +1,187 @@
+import maya.cmds as cmds
+
+def UI():
+    
+    
+    if cmds.window("mike11", exists = True):
+        cmds.deleteUI("mike11")
+
+window = cmds.window("mike", title = "mike's Tool", width = 10, height = 10, mxb = False, sizeable = False)
+
+mainLayout = cmds.rowColumnLayout(numberOfColumns = 1, width = 2, height = 20)
+
+def checkMesh(*pArgs):
+    cmds.duplicate(n='YYY')
+    cmds.xform(cp=1)
+    cmds.move(0, 0, 0)
+    cmds.select('YYY*')
+    cmds.xform(cp=1)
+    cmds.move( 0, 0, 0 )
+    
+
+#///////////////////////////////////////////////
+#                    Plane size 
+#///////////////////////////////////////////////
+def selectRotation(*args):
+
+    cmds.select('YYY')
+    
+    
+    h = cmds.xform('YYY', q=True, ws=True, bb=True)     #grabs all bounding box values for creating a plane based on the size of the mesh
+    
+    print h[5]
+    
+    a = ((  ((h[0])**2)**.5 + ((h[3])**2)**.5  ))
+    b = ((  ((h[1])**2)**.5 + ((h[4])**2)**.5  ))
+    c = ((  ((h[2])**2)**.5 + ((h[5])**2)**.5  ))
+    d = ((  a**2 + c**2 )**.5)
+    e = ((  b**2 + c**2 )**.5)
+    
+    
+    cmds.polyPlane( n='XXX', sx=1, sy=1, w= d , h= e, ax = (0,0,1))
+#///////////////////////////////////////////////
+#                End Plane Size 
+#///////////////////////////////////////////////
+#def confirmRotation(*args):
+#    xx = cmds.xform('XXX', q=True, ws=True, ro=True)     #grabs all bounding box values for creating a plane based on the size of the mesh
+#    cmds.select('YYY')
+#    cmds.xform('YYY',ws = True,ro=(-xx[0],-xx[1],-xx[2])) 
+        
+def resetIt(*pArgs):
+    cmds.delete('YYY*')
+    cmds.delete('XXX*')
+    cmds.delete('ZZZ*')
+    cmds.delete('Blades')
+##    cmds.showWindow() 
+##cmds.keyTangent( inTangentType='linear', outTangentType='linear' )   
+
+
+def enterButton(*pArgs):
+
+    
+#///////////////////////////////////////////////
+#                    Base Variables
+#///////////////////////////////////////////////    
+    sg1value = cmds.intSliderGrp( "sg1",query=True, value=True)
+    x = cmds.xform('YYY', q=True, ws=True, bb=True)
+    print sg1value      
+    
+#///////////////////////////////////////////////
+#                    Rotates Mesh 
+#///////////////////////////////////////////////
+    cmds.select('XXX')
+    xx = cmds.xform('XXX', q=True, ws=True, ro=True)     #grabs all bounding box values for creating a plane based on the size of the mesh
+    cmds.select('YYY')
+    cmds.xform('YYY',ws = True,ro=(-xx[0],-xx[1],-xx[2]))
+#    cmds.delete('XXX*')
+    yy = cmds.xform('YYY', q=True, ws=True, bb=True)     #bounding box for rotated mesh
+    wxx = ((((yy[0]**2)**.5) + ((yy[3])**2)**.5))
+    hxx = ((((yy[0]**2)**.5) + ((yy[3])**2)**.5))
+    print wxx
+    cmds.polyCube( n='ZZZ', sx=1, sy=1, w= (wxx+wxx) , h= (hxx+hxx),d=.01, ax = (0,0,0))
+    
+    
+#    a = ((  ((h[0])**2)**.5 + ((h[3])**2)**.5  ))
+#    b = ((  ((h[1])**2)**.5 + ((h[4])**2)**.5  ))
+#    c = ((  ((h[2])**2)**.5 + ((h[5])**2)**.5  ))
+
+
+#///////////////////////////////////////////////
+#         Duplicate Mesh to Slice the Mesh
+#///////////////////////////////////////////////
+
+
+    result = cmds.ls( orderedSelection=True )
+    
+    print 'result: %s' % ( result )
+    
+    transformName = result[0]
+    
+    instanceGroupName = cmds.group( empty=True, name=transformName + '_instance_grp#' )
+    
+    
+    
+    
+
+    
+    for i in range( (-((sg1value -1 )/2)), ((sg1value+1)/2) ): 
+        sg1value = cmds.intSliderGrp( "sg1",query=True, value=True)
+        newbox = cmds.xform('YYY', q=True, ws=True, bb=True) 
+        print newbox[5]
+        ii = (( newbox[5] * 2)/(sg1value+1))
+        print ii
+        instanceResult = cmds.instance( transformName, name=transformName + '_instance#' )
+        
+        cmds.parent( instanceResult, instanceGroupName )
+        cmds.select('YYY')    
+
+        z =  ((i)+ii)    #the distance move variable is equal to the mesh being created
+      #  zz = 
+        cmds.move( 0, 0, (i * ii), instanceResult )
+        
+        
+       
+    cmds.hide( transformName )
+    
+    cmds.xform( instanceGroupName, centerPivots=True )
+    resetRotate = cmds.xform('XXX', q=True, ws=True, ro=True)
+ #   cmds.select('ZZZ*')
+    var = cmds.polyUnite('ZZZ*', n='Blades')
+#    cmds.polyExtrudeFacet(ltz=.001)
+ #   cmds.duplicate(name='Sliced')
+    resetRotate = cmds.xform('XXX', q=True, ws=True, ro=True)
+    cmds.xform(cp=True)
+
+
+#    cmds.xform('Sliced',ws = True,ro=(resetRotate[0],resetRotate[1],resetRotate[2]))
+
+#    cmds.xform(cp=1)
+
+    
+    
+#def deformerButton():
+#    deform = cmds.textField( "Deformer",query=True, value=True)
+#    cmds.nonLinear(type=deforme , e=True)
+
+def cutButton(*pArgs):
+    cmds.polyBoolOp('YYY', 'Blades', op=2)
+  #  cmds.duplicate(n='Sliced')
+  #  cmds.delete('Blades*')
+  #  cmds.delete('YYY*')
+    cmds.select('XXX*')
+  #  xx = cmds.xform('XXX', q=True, ws=True, ro=True)     #grabs all bounding box values for creating a plane based on the size of the mesh
+  #  cmds.select('Sliced')
+  #  cmds.xform('Sliced',ws = True,ro=(xx[0],xx[1],xx[2]))
+
+#///////////////////////////////////////////////
+#                End of Section
+#///////////////////////////////////////////////
+       
+cmds.separator( style="none")
+cmds.button(label="Select Mesh",bgc = (.93906,.86328,.39844),w=200, command = checkMesh)
+#cmds.button(label="Confirm Mesh",bgc = (.896, .66172, .0546875), command = confirmMesh)
+cmds.button(label="Set Rotation",bgc = (.88672, .65625, .386712875),w=30,  command = selectRotation)
+#cmds.button(label="Confirm Rotation",bgc = (.9140625, .375, .1875),w=30, command = confirmRotation)
+cmds.text(label="Slices:")
+#cmds.intField("sg1",w=5, cc=sliderIntCheck)   
+cmds.intSliderGrp("sg1", field=True,w=5, cc=enterButton)    
+#deforme = cmds.textField( text='Enter Name of Deformer, if any',cc = deformerButton)
+#cmds.button(label='Activate Deformer',bgc = (.9140625, .375, .1875),w=30, command = deformerButton)
+
+
+
+
+#/////////////////////////////////////////////////////
+#                       RESET
+#/////////////////////////////////////////////////////  
+cmds.button( label='CUT', bgc=(.3,.5,.2),w=100, command = cutButton)
+cmds.button( label='RESET',bgc=(.5,.2,.2),w=30, command = resetIt )
+#//////////////////////////////////////////////
+#                    FINAL
+#//////////////////////////////////////////////    
+ 
+  
+cmds.showWindow(window)
+
+
+    
