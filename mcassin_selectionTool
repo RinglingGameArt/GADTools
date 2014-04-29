@@ -42,12 +42,10 @@ def selectionTool(mode=None):
     
     if mode == "edge":
         selected = cmds.ls(sl=True)
-        if selected:
-            logging.error("Please Select an Edge")
-            return
         if not selected:
             logging.error("Please Select an Object")
-            return
+        if selected:
+            logging.warning("Please Select an Edge")
         mel.eval('polySelectEdgesEveryN "edgeRing" 2')
 
         
