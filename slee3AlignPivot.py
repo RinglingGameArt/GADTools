@@ -3,6 +3,7 @@
 # This script helps to make align pivot with multiple objects
 # also can change all of the pivot location bottom XYZ / good for the modular kits 
 # selected multiple objects and run the script. 
+# also, you don't have to make a selection : just use this tool to move the pivot somewhere. 
 
 
 import maya.cmds as cmds
