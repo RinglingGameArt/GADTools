@@ -7,48 +7,104 @@
 
 import maya.cmds as cmds
 import random
+
+global ScaleP
+global RotateP
+
 # you need to import Maya's random function. This command does just that.
 
-original = cmds.polyCube(w=1, h=1, d=1, name="DebrisCube")
-# variable "result" that creates a cube called DebrisCube.
+def generateDebrisUI():
+    window_name = "DebrisSimulatorWindow"
 
-transformName = original[0]
-# the 0 in the [] references the name under result: "DebrisCube"
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name) 
 
-for i in range( 0, 50 ):
+    my_window = cmds.window(window_name, title="Debris Simulator")
+    # Assigns window name.
 
-    instanceResult = cmds.instance(transformName, name=transformName + '_instance#')
-    # creates an instance of the cube. This instance mirrors the geometry of the original.
+
+    row_Layout = cmds.rowColumnLayout(numberOfColumns = 6)
+    # This is the Parent. Defines the layout.
+    
+    
+    my_layout = cmds.columnLayout(parent=my_window, adj=True)
+    cmds.intSliderGrp( "ScaleMod", label='Scale Modifier Max', field=True, cc=ScaleModPLS )
+    cmds.intSliderGrp( "RotateMod", label='Rotate Modifier Max', field=True, cc=RotateModPLS )
+    cmds.intSliderGrp( "MoveMod", label='Move Modifier Max', field=True, cc=MoveModPLS )
+    # these generate the sliders.
     
 
-    xmove=random.randint(-100,100)
-    ymove=random.randint(-100,100)
-    zmove=random.randint(-100,100)
-    # these are variables that define the random range on which the instances are moved.
-
-    cmds.move(xmove,ymove,zmove, instanceResult)
-    # this command references the above variables and moves the instances.
-
-
-    xscale=random.randint(5,20)
-    yscale=random.randint(5,20)
-    zscale=random.randint(5,20)
-    # these are variables that define the random range on which the instances are scaled.
-
-    cmds.scale(xscale,yscale,zscale, instanceResult)
-    # this command references the above variables and scales the instances.
-
-
-    xrotate=random.randint(0,360)
-    yrotate=random.randint(0,360)
-    zrotate=random.randint(0,360)
-    # these are variables that define the random range on which the instances are rotated.
-
-    cmds.rotate(random.randint(90,270), instanceResult)
-    # this command references the above variables and rotates the instances.
+    cmds.text(label="", width=15, parent = row_Layout)
+    cmds.button(label="Generate Debris", width=100, parent = row_Layout, c=generateDebris)
+    # Button to Generate Debris.
     
-cmds.select( 'DebrisCube_instance*' )
-# This selects all the cubes.
+    cmds.showWindow(my_window)
 
-cmds.polyUnite( 'DebrisCube_instance*' )
-# This merges all the cubes.
+def ScaleModPLS (*arg):
+    ScaleP = cmds.intSliderGrp("ScaleMod", query=True, value=True)
+    
+def RotateModPLS (*arg):
+    RotateP = cmds.intSliderGrp("RotateMod", query=True, value=True)
+    
+def MoveModPLS (*arg):
+    MoveP = cmds.intSliderGrp("MoveMod", query=True, value=True)
+    
+    # These define the Scale, Rotate, and Move functions.
+
+
+def generateDebris(mode=None):
+    generateInstances("Instance")
+    
+    # This defines the Generate Debris Instance.
+    
+def generateInstances(mode=None):
+    ScaleP = cmds.intSliderGrp("ScaleMod", query=True, value=True)
+    RotateP = cmds.intSliderGrp("RotateMod", query=True, value=True)
+    MoveP = cmds.intSliderGrp("MoveMod", query=True, value=True)
+    # Restating the functions.
+    if mode == "Instance":
+        original = cmds.polyCube(w=1, h=1, d=1, name="DebrisCube")
+        # variable "result" that creates a cube called DebrisCube.
+        
+        transformName = original[0]
+        # the 0 in the [] references the name under result: "DebrisCube"
+        
+        for i in range( 0, 50 ):
+        
+            instanceResult = cmds.instance(transformName, name=transformName + '_instance#')
+            # creates an instance of the cube. This instance mirrors the geometry of the original.
+            
+        
+            xmove=random.randint(-MoveP,MoveP)
+            ymove=random.randint(-MoveP,MoveP)
+            zmove=random.randint(-MoveP,MoveP)
+            # these are variables that define the random range on which the instances are moved.
+        
+            cmds.move(xmove,ymove,zmove, instanceResult)
+            # this command references the above variables and moves the instances.
+        
+        
+            xscale=random.randint(5,ScaleP)
+            yscale=random.randint(5,ScaleP)
+            zscale=random.randint(5,ScaleP)
+            # these are variables that define the random range on which the instances are scaled.
+        
+            cmds.scale(xscale,yscale,zscale, instanceResult)
+            # this command references the above variables and scales the instances.
+        
+        
+            xrotate=random.randint(0,RotateP)
+            yrotate=random.randint(0,RotateP)
+            zrotate=random.randint(0,RotateP)
+            # these are variables that define the random range on which the instances are rotated.
+        
+            cmds.rotate(random.randint(90,270), instanceResult)
+            # this command references the above variables and rotates the instances.
+            
+        cmds.select( 'DebrisCube_instance*' )
+        # This selects all the cubes.
+        
+        cmds.polyUnite( 'DebrisCube_instance*' )
+        # This merges all the cubes.
+
+generateDebrisUI()
