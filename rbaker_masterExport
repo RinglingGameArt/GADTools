@@ -7,18 +7,25 @@
 import maya.cmds as cmds
 
 
-def MasterExportToolUI(): 
+def ReadyForExportToolUI(): 
         
     # define name of window
-    window_name = "Master Export Tool!"
+    window_name = "Ready For Export Tool"
     
     # checks for duplicates/window alreadye exists? 
     if cmds.window(window_name, q=True, exists=True):
         cmds.deleteUI(window_name)
         
     # create new window
-    my_window = cmds.window(window_name, title="Master Eport Tool")
+    my_window = cmds.window(window_name, title="Ready For Export Tool")
     cmds.columnLayout(adj=True)
+    
+     # make box larger
+    my_layout = cmds.columnLayout(parent=my_window, adj=True)
+    cmds.intSliderGrp( "sg1", label='intSlider', field=True, cc=sliderIntCheck )
+    
+    cmds.checkBox( label='New Object' )
+    
     #create buttons for each aspect of tool
     cmds.button(c=cleancombine, l="CleanCombine")
     cmds.button(c=centerpivot, l="CenterPivot")
@@ -94,8 +101,6 @@ def deletehistory(*args):
   
 
 MasterExportToolUI()    
-
-
 
 
 
