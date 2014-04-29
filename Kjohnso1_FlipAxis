@@ -1,15 +1,20 @@
 import maya.cmds as cmds
 import logging 
 
+#This is creating my window.
+
 def generateCollisionUI():
 
     window_name = "collisionUI"
     
+    #This will close the window if it is already open so multiple instances aren't open at once. 
     if cmds.window(window_name, q=True, exists=True):
         cmds.deleteUI(window_name)
         
     my_window = cmds.window(window_name, title="Flip Axis")
     cmds.columnLayout(adj=True)
+    
+    #This is creating all three buttons in my window.
     
     cmds.button(c=flipToX, l="Flip on X Axis")
     cmds.button(c=flipToY, l="Flip on Y Axis")
@@ -32,7 +37,7 @@ def flip(mode=None):
     if not selected:
         logging.error("Please Select Something")
         return 
-    
+    #This is the x function, it will flip in the x axis.
     if mode == "X":
         print "x is working"
         #cmds.setAttr((selected + ".rotateX"),90)
@@ -40,10 +45,13 @@ def flip(mode=None):
         #cmds.scale(selected, 
         #polyMirrorFace
         
+        #this is the y function, it will flip in the y axis.
     if mode == "Y":
         print "y is working"
         cmds.xform(r=True, ro=(0,90,0))
         
+        
+        #this is the z function, it will flip in the z axis.
     if mode == "Z":
         print "z is working"
         cmds.xform(r=True, ro=(0,0,90))
