@@ -1,0 +1,153 @@
+import maya.cmds as cmds
+import logging
+
+global CB1
+global CB2
+global CB3
+global CB4
+global CB5
+
+
+def PerfectEportToolUI():
+    
+    #name of the Window
+    window_name = "Perfect Export Tool"
+    
+    #Delete UI If its already exists
+    if cmds.window(window_name, q=True, exists=True):
+       cmds.deleteUI(window_name)
+   
+   #Create new window    
+    my_window = cmds.window(window_name, title="Perfect Export Tool")
+    cmds.columnLayout(adj=True)
+    
+    my_layout = cmds.columnLayout(parent=my_window, adj=True)
+
+    
+    #Button that deos all the functions
+    cmds.button(label= "Easy Export", c=allinone)
+
+
+    collection = cmds.radioCollection()
+    collectionLayout = cmds.rowLayout(numberOfColumns=6)
+    cmds.checkBox("cb1", label="Delete History", p=collectionLayout)
+    cmds.checkBox("cb2", label="Freeze Transforms", p=collectionLayout)    
+    cmds.checkBox("cb3", label="Set,Conform, and Lock Normals", p=collectionLayout)
+    cmds.checkBox("cb4", label="Move Pivot to Bottom Center", p=collectionLayout)
+    cmds.checkBox("cb5", label="Move Object to World Center", p=collectionLayout)
+    
+    cmds.button(label= "Run Checked", c=testCheckBox)
+  
+    cmds.showWindow(my_window)
+   
+#buttons Function   
+def allinone(unused = None):
+    PerfectExportTool('tool')
+
+def PerfectExportTool(mode=None):
+
+    selected = cmds.ls(sl=True)
+    if not selected:
+        logging.error("Please Select Something")
+        return 
+        
+    if mode == "tool":
+        mesh = cmds.xform(cp=True)
+        cmds.makeIdentity(apply=1, translate=1, rotate=1, scale=1, normal=0, pn=1) #Freezes Transforms
+        cmds.DeleteHistory (selected) # delete the history of the selected objects
+        cmds.ConformPolygonNormals (selected) #conforms normals
+        cmds.SetToFaceNormals (selected) #sets normals
+        cmds.polyNormalPerVertex (selected, fn=True) #lock normals
+        
+        selection = cmds.ls(sl=True)
+        for selected in selection:
+    
+            cmds.xform(selected, cp=True)
+            
+            bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+            xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+            cmds.move(bounding_box[2], (selected + ".scalePivot", selected + ".rotatePivot"), z=True, absolute=True)
+            
+            cmds.move(0, 0, 0, 'selected', absolute=True )
+                 
+            #Defining Global?
+                
+def CBDeleteHis (*arg):
+    CB1 = cmds.checkBox("cb1", query=True, v=True)
+
+def CBFreezeT (*arg):
+    CB2 = cmds.checkBox("cb2", query=True, v=True)
+
+def CBNormals (*arg):
+    CB3 = cmds.checkBox("cb3", query=True, v=True)
+    
+def CBPivot (*arg):
+    CB4 = cmds.checkBox("cb4", query=True, v=True)
+    
+def CBObjMove (*arg):
+    CB5 = cmds.checkBox("cb5", query=True, v=True)
+
+#Button for run boxes
+
+def testCheckBox(unused = None):
+    generateCheckBox('checked')
+   
+#getting it to work
+
+def generateCheckBox(mode=None):
+    
+    CB1 = cmds.checkBox("cb1", query=True, v=True) 
+    CB2 = cmds.checkBox("cb2", query=True, v=True)
+    CB3 = cmds.checkBox("cb3", query=True, v=True)
+    CB4 = cmds.checkBox("cb4", query=True, v=True)
+    CB5 = cmds.checkBox("cb5", query=True, v=True)   
+     
+    if mode == "checked":     
+        if CB1 == True:
+            
+            print "cb1 is true"
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                cmds.DeleteHistory(selected)
+                print "history delted"
+            
+        if CB2 == True:
+              
+            print "cb2 is true"        
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                cmds.makeIdentity(apply=1, translate=1, rotate=1, scale=1, normal=0, pn=1)
+                print "frozen transforms"
+                
+        if CB3 == True:
+            
+            print "cb3 is true"
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                cmds.ConformPolygonNormals (selected) #conforms normals
+                cmds.SetToFaceNormals (selected) #sets normals
+                cmds.polyNormalPerVertex (selected, fn=True) #lock normals
+                print "normals"
+                
+        if CB4 == True:
+            
+            print "cb4 is true"
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                cmds.xform(selected, cp=True)
+                
+                bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+                xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+                cmds.move(bounding_box[2], (selected + ".scalePivot", selected + ".rotatePivot"), z=True, absolute=True)
+                print "Moved Pivot"
+                
+        if CB5 == True:
+            
+            print "cb5 is true"
+            selection = cmds.ls(sl=True)
+            for selected in selection:
+                cmds.move(0, 0, 0, selected, absolute=True, ws=True)
+                print "Moved to center"
+                    
+
+PerfectEportToolUI()
