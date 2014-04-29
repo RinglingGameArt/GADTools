@@ -1,59 +1,67 @@
 # Soojin Lee 
 # GA 240_01 
-# This script helps to make align pivot with multiple objects
-# also can change all of the pivot location bottom XYZ / good for the modular kits 
-# selected multiple objects and run the script. 
-# also, you don't have to make a selection : just use this tool to move the pivot somewhere. 
+# This script helps to align pivots with multiple objects.
+# Change all of the pivots location bottom XYZ / good for the modular kits 
+# It also works for a single object. 
 
 
 import maya.cmds as cmds
-
-selection = cmds.ls(sl=True)
-for selected in selection:
-    #Checks if something is selected
-
-    cmds.xform(selected, cp=True)
-    #make the pivot middle bottom first _ pivot confusing!! 
-        
-    # determine the bounding box so we know where to put our pivot
-    # bounding_box = xmin ymin zmin xmax ymax zmax.
-    bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
-    xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
     
-    #Align piovt
-    piv = cmds.xform (selected , piv=True, q=True, ws=True) #make a basic pivot information
-
 #function settings   
-
 def myFunction1(*args): #gives a definition and hold the values of all nonkeyword variable arguments. / *args 
     #function1=X button
-    cmds.move(xmin, ymin, zmin, [selected +".scalePivot",selected + ".rotatePivot"], x=True, y=True, z=True, absolute=True)
-    #change location of pivot
-    # change the xyz min and max for ajust pivot location
-    piv = cmds.xform (selected , piv=True, q=True, ws=True) 
-    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the x button pivot setting
+    selection = cmds.ls(sl=True)
+    for selected in selection:
+        bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+        xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+    
+        cmds.move(xmin, ymin, zmin, [selected +".scalePivot",selected + ".rotatePivot"], x=True, y=True, z=True, absolute=True)
+        #change location of pivot
+        # change the xyz min and max for ajust pivot location
+        piv = cmds.xform (selected , piv=True, q=True, ws=True) 
+        cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the x button pivot setting
     
 def myFunction2(*args):
-    cmds.move(xmax, ymin, zmin, [selected +".scalePivot",selected + ".rotatePivot"], x=True, y=True, z=True, absolute=True)
-    #change location of pivot
-    piv = cmds.xform (selected , piv=True, q=True, ws=True) 
-    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the y button pivot setting
+    selection = cmds.ls(sl=True)
+    for selected in selection:
+        bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+        xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+        
+        cmds.move(xmax, ymin, zmin, [selected +".scalePivot",selected + ".rotatePivot"], x=True, y=True, z=True, absolute=True)
+        #change location of pivot
+        piv = cmds.xform (selected , piv=True, q=True, ws=True) 
+        cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the y button pivot setting
 
-def myFunction3(*args): 
-    cmds.move(xmax, ymax, zmin, [selected +".scalePivot",selected + ".rotatePivot"], x=True, y=True, z=True, absolute=True)
-    #change location of pivot
-    piv = cmds.xform (selected , piv=True, q=True, ws=True) 
-    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
+def myFunction3(*args):
+    selection = cmds.ls(sl=True)
+    for selected in selection:
+        bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+        xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+        
+        cmds.move(xmax, ymax, zmin, [selected +".scalePivot",selected + ".rotatePivot"], x=True, y=True, z=True, absolute=True)
+        #change location of pivot
+        piv = cmds.xform (selected , piv=True, q=True, ws=True) 
+        cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
 
 def myFunction4(*args): #new!
-    cmds.xform(selected, cp=True)
-    piv = cmds.xform (selected , piv=True, q=True, ws=True) 
-    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
+    selection = cmds.ls(sl=True)
+    for selected in selection:
+        bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+        xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+        
+        cmds.xform(selected, cp=True)
+        piv = cmds.xform (selected , piv=True, q=True, ws=True) 
+        cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
     
 def myFunction5(*args): #new!
-    cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
-    piv = cmds.xform (selected , piv=True, q=True, ws=True) 
-    cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
+    selection = cmds.ls(sl=True)
+    for selected in selection:
+        bounding_box = cmds.xform(selected, q=True, boundingBox=True, ws=True)
+        xmin, ymin, zmin, xmax, ymax, zmax = bounding_box
+        
+        cmds.move(bounding_box[2], [selected + ".scalePivot", selected + ".rotatePivot"], z=True, absolute=True)
+        piv = cmds.xform (selected , piv=True, q=True, ws=True) 
+        cmds.xform(selection , ws=True, piv=(piv[0], piv[1], piv[2]) )#Align pivot to the z button pivot setting
 
 #widget setting
 window_name = "slee3AlignPivot"
