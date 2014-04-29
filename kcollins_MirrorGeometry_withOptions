@@ -1,45 +1,83 @@
-"""Mirroring Geometry"""
 
 import maya.cmds as cmds
+import logging 
 
-#SELECT YOUR AXIS HERE***
-global mode
-mode = "-X"
+def generateCollisionUI(): # builds the UI and buttons
 
-#Have object selected
-
-
-#if not selected:
-#    logging.error("Select something!")
-#    return
-
-#Mirror your object
-
-
-def mirrorGeom(*args):
+    window_name = "collisionUI"
     
-    selectArray = cmds.ls(sl=True)
+    if cmds.window(window_name, q=True, exists=True):
+        cmds.deleteUI(window_name)
+        
+    my_window = cmds.window(window_name, title="Collision Tools")
+    cmds.columnLayout(adj=True)
     
-    #***Axis Glossary: Pick which axis you want to mirror your object and insert it on line 5
-    for index in selectArray:
-        
-        if mode == "+X":
-            cmds.polyMirrorFace(index, direction=0)
-        
-        if mode == "-X":
-            cmds.polyMirrorFace(index, direction=1)
-        
-        if mode == "+y":
-            cmds.polyMirrorFace(index, direction=2)
-        
-        if mode == "-y":
-            cmds.polyMirrorFace(index, direction=3)
-        
-        if mode == "+Z":
-            cmds.polyMirrorFace(index, direction=4)
-        
-        if mode == "-Z":
-            cmds.polyMirrorFace(index, direction=5)
-   
+    #All the buttons
+    
+    cmds.text(l="Hello fellow GAD! Please pick the axis you want to mirror on")
 
-mirrorGeom()
+    cmds.button(c=mirrorNegativeX, l="Mirror to -X")
+    
+    cmds.button(c=mirrorPositiveX, l="Mirror to +X")
+    
+    cmds.button(c=mirrorNegativeY, l="Mirror to -Y")
+    
+    cmds.button(c=mirrorPositiveY, l="Mirror to +Y")
+    
+    cmds.button(c=mirrorNegativeZ, l="Mirror to -Z")
+    
+    cmds.button(c=mirrorPositiveZ, l="Mirror to +Z")  # generate Sphere button - passes sphere arugement to generateSphere
+    
+    
+    cmds.showWindow(my_window)
+    
+    #All the mirroing commands
+
+def mirrorNegativeX(unused = None): 
+    mirrorGeom('negX')
+    
+def mirrorPositiveX(unused = None): 
+    mirrorGeom('posX')
+    
+def mirrorNegativeY(unused = None): 
+    mirrorGeom('negY')
+    
+def mirrorPositiveY(unused = None): 
+    mirrorGeom('posY')
+    
+def mirrorNegativeZ(unused = None): 
+    mirrorGeom('negZ')
+    
+def mirrorPositiveZ(unused = None): 
+    mirrorGeom('posZ')
+
+def mirrorGeom(mode=None):
+
+    selected = cmds.ls(sl=True)
+    for selection in selected:
+        
+        if mode == "negX":
+            cmds.polyMirrorFace(selected, direction=1)
+            print("negative X is working")
+            
+        if mode == "posX":
+            cmds.polyMirrorFace(selected, direction=0)
+            print("positive X is working")
+            
+        if mode == "negY":
+            cmds.polyMirrorFace(selected, direction=3)
+            print("negative Y is working")
+            
+        if mode == "posY":
+            cmds.polyMirrorFace(selected, direction=2)
+            print("positive Y is working")
+            
+        if mode == "negZ":
+            cmds.polyMirrorFace(selected, direction=5)
+            print("negative Z is working")
+            
+        if mode == "posZ":
+            cmds.polyMirrorFace(selected, direction=4)
+            print("positive Z is working")
+    
+generateCollisionUI()
