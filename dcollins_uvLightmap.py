@@ -1,26 +1,17 @@
 """
     Automatically unwrap lightmap from existing UV set
     By: Dylan Collins
+    
+    Use on any selected polyMesh 
 """
 
 import maya.cmds as cmds
 import maya.OpenMaya as OpenMaya
 
 """
-cmds.select(all=True)
-cmds.delete()
-cmds.polyCube(createUVs=4)
-cmds.polyCube(createUVs=4)
-cmds.xform(ws=True, t=[-2,0,0])
-cmds.select(allDagObjects=True)
-"""
-
-"""
 Global Variables
 """
 selection = cmds.ls(sl=True)
-#currentMap = "map1"
-#lightmap = "Lightmap"
 
 """
 Functions
@@ -31,6 +22,10 @@ class copyToLightmap():
 #Select faces for each selected object and query if a lightmap uv already exists    
     def __init__(self):
         self.lightmap = "Lightmap"
+        self.shellSpacingSlider = "shellSpacingSlider"
+        self.spacingPresets = ["Custom", "2048 Map", "1024 Map", "512 Map", "256 Map", "128 Map", "64 Map", "32 Map"]
+        self.spacingPresetValues = [3.2, .05, .1, .2, .4, .8, 1.6, 3.2]
+        self.presetSelect = "presetSelect" 
         for self.sel in selection:
             print "test"
             cmds.select(self.sel)
@@ -57,9 +52,12 @@ class copyToLightmap():
                 
 #Copy uvs to new lightmap and layout with edge padding        
     def copyAndLayout(self):
+        
+        percentageSpace = cmds.floatSliderGrp(self.shellSpacingSlider, q=True, v=True)    #get percentage space from slider
+        
         self.currentMap = cmds.optionMenuGrp(self.uvSetChoice, q=True, v=True)
         cmds.polyCopyUV(self.selFace, cm=True, uvi=self.currentMap, uvs=self.inputLightmap)
-        cmds.polyMultiLayoutUV(scale=1, rotateForBestFit=2, layout=2, ps=3.2, uvs=self.inputLightmap)
+        cmds.polyMultiLayoutUV(psc=2, scale=1, rotateForBestFit=2, layout=2, ps=percentageSpace, uvs=self.inputLightmap)
         cmds.TextureViewWindow()    #opens uv texture editor
         cmds.select(self.sel)        #selects original objects to get out of face selection
         cmds.deleteUI(self.optionWindow)
@@ -81,14 +79,26 @@ class copyToLightmap():
         window_name = "uvSetOptions"
         if cmds.window(window_name, q=True, exists=True):
             cmds.deleteUI(window_name)
-        self.optionWindow = cmds.window(window_name, title="Copy UV Set Options")
+        self.optionWindow = cmds.window(window_name, title="Lightmap Options")
         layout = cmds.columnLayout(parent=self.optionWindow, adj=True)
         self.uvSetChoice = cmds.optionMenuGrp(label="Source UV Set")
         for uvSet in self.uvList:    #lists selections' uv sets
             cmds.menuItem(label=uvSet)
         self.lightmapBox = cmds.textFieldGrp(label="New UV Set Name", text=self.lightmap)
-        cmds.button(label="Copy", width=200, c=self.copyAndLayoutCheck)
+        self.presetSelect = cmds.optionMenuGrp(self.presetSelect, label="Spacing Presets", cc=self.presetValue)
+        for preset in self.spacingPresets:
+            cmds.menuItem(label=preset)
+        cmds.floatSliderGrp(self.shellSpacingSlider, label="Spacing Amount:", v=3.200, step=0.001, max=5.000, field=True)
+        print cmds.floatSliderGrp(self.shellSpacingSlider, q=True, v=True)
+        cmds.button(label="Generate Lightmap", width=200, c=self.copyAndLayoutCheck)
         cmds.showWindow(self.optionWindow)
+
+#Set percentage space slider based on value associated with spacing preset chosen        
+    def presetValue(self, none):
+        for preset, value in zip(self.spacingPresets, self.spacingPresetValues):
+            presetSelectValue = cmds.optionMenuGrp(self.presetSelect, q=True, v=True)
+            if preset == presetSelectValue:
+                cmds.floatSliderGrp(self.shellSpacingSlider, edit=True, v=value)
 
 #Window asking if the old lightmap should be replaced           
     def replaceWarningWindow(self):
