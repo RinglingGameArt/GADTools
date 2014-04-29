@@ -8,7 +8,7 @@ in Four viewports
 '''
 
 '''
-	Toggle Wireframe
+	Turns on Wireframe in all viewports
 '''
 
 import maya.cmds as cmds
@@ -21,7 +21,7 @@ for view in p:
 
 
 '''
-	Toggle SmoothShade
+	Turns on Smoothshade in all viewports
 '''
 
 import maya.cmds as cmds
