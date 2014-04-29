@@ -3,17 +3,21 @@
     Version 1.0
     By: Eric D. Gingrich
     Requirements:
-        All objects that make up the vehicle grouped under (transform? name for this?) "Entire_Vehicle" 
-        Wheel objects named
+        All objects that make up the entire vehicle in a group called "Entire_Vehicle" 
+        (NOTE: For the weighting script you will also need to combine or group all objects that make up the chasis
+        and name them "Main_Root" Might as well do this now.)
+        All objects that make up the individual wheels combined or grouped with the following names 
             B_L_Tire
             B_R_Tire
             F_L_Tire
             F_R_Tire
-        Axle objects named
+        All objects that make up the individual brake drums or wishbone combined or grouped with the following names.
+        This part of the script puts a bone on the inside of this mesh or group so that it can pivot from this spot.
             B_L_Axle
             B_R_Axle
             F_L_Axle
-            F_R_Axle         
+            F_R_Axle  
+        The rest of the suspension can be named whatever you want.
 """
 # Import Maya Commands
 import maya.cmds as cmds
