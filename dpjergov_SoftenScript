@@ -11,6 +11,8 @@ The Texture Editor does the obvious- and allows you to call it up with just the 
 
 And Last but not least- the exported allows you to center everything within the model and then the export button allows you 
 to quickly EXPORT IT! 
+
+JUST RUN THE SCRIPT BELOW NOT THIS COMMENT- IF YOU DO IT WILL NOT WORK.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
 
 import maya.cmds as cmds
