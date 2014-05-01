@@ -1,4 +1,4 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""
 DANNY'S UV-CENTRIC EXPORT
 
 This script allows you to make sure you have everything correctly aligned and placed within your model so you have to
@@ -13,7 +13,7 @@ And Last but not least- the exported allows you to center everything within the 
 to quickly EXPORT IT! 
 
 JUST RUN THE SCRIPT BELOW NOT THIS COMMENT- IF YOU DO IT WILL NOT WORK.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
+""""
 
 import maya.cmds as cmds
 
