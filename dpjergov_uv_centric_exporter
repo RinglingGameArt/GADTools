@@ -17,6 +17,8 @@ JUST RUN THE SCRIPT BELOW NOT THIS COMMENT- IF YOU DO IT WILL NOT WORK.
 
 import maya.cmds as cmds
 
+import logging 
+
 window_name = "controlsWindow"
 
 if cmds.window(window_name, q=True, exists=True):
@@ -35,7 +37,7 @@ def OpenSet(*args):
     cmds.TextureCentricUVLinkingEditor()
     print cmds.getPanel(vis=True) # Contains 'outlinerPanel1'
     
-    
+        
 #Open UV Editor
 def OpenUV(*args):
     print "Opening UV Editor"
@@ -56,6 +58,10 @@ def ReadyForExport(*args):
         cmds.xform(dph=True, cp=True)   
         cmds.move(0, 0, 0)
         cmds.makeIdentity( apply=True, t=1, r=1, s=1, n=2 )
+        
+if not selection:
+    raise logging.warning('Nothing is Selected') 
+                
 
 #Export File        
 def ExportNow(*args):
@@ -63,7 +69,7 @@ def ExportNow(*args):
     selection = cmds.ls(sl=True)
     for selected in selection:
         
-        cmds.fileDialog2(fileMode=0, caption="Save As") 
+        cmds.fileDialog2(fileFilter="FBX export (*.fbx)", fileMode=0, caption="Save As") 
             
         
 cmds.button(c=OpenSet, l="RELATIONSHIP EDITOR")
