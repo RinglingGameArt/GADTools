@@ -1,24 +1,72 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-THE SCRIPT TO END ALL SCRIPTS THE ONE THE ONLY.....
+DANNY'S UV-CENTRIC EXPORT
 
-the really awful script that barely works but hopefully will be enough to let me pass this assignment
-at least until I have a resubmit ready to be placed. 
+This script allows you to make sure you have everything correctly aligned and placed within your model so you have to
+do none of the UV leg work in UDK! 
 
-Script toggels between soft(?) mesh and hard mesh. 
+The Relationship Editor allows you to use Multiple UV sets as if they were Materials- allowing you to make sure you have 
+those "high res" textures in the right place
 
-yeh. 
+The Texture Editor does the obvious- and allows you to call it up with just the push of ONE button.
+
+And Last but not least- the exported allows you to center everything within the model and then the export button allows you 
+to quickly EXPORT IT! 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
 
 import maya.cmds as cmds
 
-selection = cmds.ls(sl=True)
-for selected in selection:
+window_name = "controlsWindow"
+
+if cmds.window(window_name, q=True, exists=True):
+       cmds.deleteUI(window_name)
+       
+
+my_window = cmds.window(window_name, title="TEXTURE TOOLPACK")
+
+my_layout = cmds.columnLayout(parent=my_window, adj=True) 
+
+#Open UV Centric Set Editor
+def OpenSet(*args):
+    print "Opening Relationship Editor"
+    cmds.TextureCentricUVLinkingEditor()
+    print cmds.getPanel(vis=True) # Does not contain 'outlinerPanel1'
+    cmds.TextureCentricUVLinkingEditor()
+    print cmds.getPanel(vis=True) # Contains 'outlinerPanel1'
     
-    softedge = cmds.polyOptions(selected, q=True, se=True)
-    if softedge[0]:
-        cmds.polyOptions(selected, he=True)
-    else:
-        cmds.polyOptions(selected, se=True)
+    
+#Open UV Editor
+def OpenUV(*args):
+    print "Opening UV Editor"
+    cmds.TextureViewWindow()
+    print cmds.getPanel(vis=True) # Does not contain 'outlinerPanel1'
+    cmds.TextureViewWindow()
+    print cmds.getPanel(vis=True) # Contains 'outlinerPanel1'    
+    
+
+#Triple Decker Export
+def ReadyForExport(*args):
+    print "Ready For Export"
+    import maya.cmds as cmds
+    
+    selection = cmds.ls(sl=True)
+    for selected in selection:
         
-def softedge():
-    generateCollision("Soften")
+        cmds.xform(dph=True, cp=True)   
+        cmds.move(0, 0, 0)
+        cmds.makeIdentity( apply=True, t=1, r=1, s=1, n=2 )
+
+#Export File        
+def ExportNow(*args):
+    print "Exporting"
+    selection = cmds.ls(sl=True)
+    for selected in selection:
+        
+        cmds.fileDialog2(fileMode=0, caption="Save As") 
+            
+        
+cmds.button(c=OpenSet, l="RELATIONSHIP EDITOR")
+cmds.button(c=OpenUV, l="UV EDITOR")
+cmds.button(c=ReadyForExport, l="READY FOR EXPORT")
+cmds.button(c=ExportNow, l="EXPORT")
+
+cmds.showWindow(my_window)
